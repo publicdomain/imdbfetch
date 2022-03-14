@@ -9,6 +9,7 @@ namespace IMDBfetch
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using System.Diagnostics;
     using System.Drawing;
     using System.IO;
     using System.Net;
@@ -164,7 +165,8 @@ namespace IMDBfetch
         /// <param name="e">Event arguments.</param>
         private void OnFreeReleasesPublicDomainIsToolStripMenuItemClick(object sender, EventArgs e)
         {
-            // TODO Add code
+            // Open our website
+            Process.Start("https://publicdomain.is");
         }
 
         /// <summary>
