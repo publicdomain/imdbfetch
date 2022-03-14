@@ -54,9 +54,15 @@ namespace PublicDomain
         public bool Desc { get; set; } = false;
 
         /// <summary>
-        /// Gets or sets the API delay.
+        /// Gets or sets the API key.
         /// </summary>
-        /// <value>The API delay.</value>
-        public int ApiDelay { get; set; } = 6000;
+        /// <value>The API key.</value>
+        public string ApiKey { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="T:PublicDomain.SettingsData"/> API calls on start.
+        /// </summary>
+        /// <value><c>true</c> if API calls on start; otherwise, <c>false</c>.</value>
+        public bool ApiCallsOnStart { get; set; } = false;
     }
 }

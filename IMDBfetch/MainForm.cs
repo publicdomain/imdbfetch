@@ -98,7 +98,12 @@ namespace IMDBfetch
         /// <param name="e">Event arguments.</param>
         private void OnBrowseButtonClick(object sender, EventArgs e)
         {
-            // TODO Add code
+            this.folderBrowserDialog.SelectedPath = string.Empty;
+
+            if (this.folderBrowserDialog.ShowDialog() == DialogResult.OK && this.folderBrowserDialog.SelectedPath.Length > 0)
+            {
+                this.directoryTextBox.Text = this.folderBrowserDialog.SelectedPath;
+            }
         }
 
         /// <summary>
