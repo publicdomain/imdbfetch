@@ -224,7 +224,12 @@ namespace IMDBfetch
         /// <param name="e">Event arguments.</param>
         private void OnImagePictureBoxMouseMove(object sender, MouseEventArgs e)
         {
-            // TODO Add code
+            if (e.Button == MouseButtons.Left)
+            {
+                var files = new string[] { this.filePath };
+
+                this.imagePictureBox.DoDragDrop(new DataObject(DataFormats.FileDrop, files), DragDropEffects.Copy | DragDropEffects.Move);
+            }
         }
 
         /// <summary>
