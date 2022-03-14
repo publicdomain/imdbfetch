@@ -176,7 +176,8 @@ namespace IMDBfetch
         /// <param name="e">Event arguments.</param>
         private void OnMainFormLoad(object sender, EventArgs e)
         {
-            // TODO Add code
+            // Focus search text box
+            this.searchTextBox.Focus();
         }
 
         /// <summary>
