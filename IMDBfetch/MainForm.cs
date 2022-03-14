@@ -9,7 +9,10 @@ namespace IMDBfetch
     using System;
     using System.Collections.Generic;
     using System.Drawing;
+    using System.IO;
     using System.Windows.Forms;
+    using System.Xml.Serialization;
+    using PublicDomain;
 
     /// <summary>
     /// Description of MainForm.
@@ -171,7 +174,7 @@ namespace IMDBfetch
         /// </summary>
         /// <param name="sender">Sender object.</param>
         /// <param name="e">Event arguments.</param>
-        private void MainFormFormClosing(object sender, FormClosingEventArgs e)
+        private void OnMainFormFormClosing(object sender, FormClosingEventArgs e)
         {
             // TODO Add code
         }
@@ -181,9 +184,35 @@ namespace IMDBfetch
         /// </summary>
         /// <param name="sender">Sender object.</param>
         /// <param name="e">Event arguments.</param>
-        private void MainFormLoad(object sender, EventArgs e)
+        private void OnMainFormLoad(object sender, EventArgs e)
         {
             // TODO Add code
+        }
+
+        /// <summary>
+        /// Saves the settings file.
+        /// </summary>
+        /// <param name="settingsFilePath">Settings file path.</param>
+        /// <param name="settingsDataParam">Settings data parameter.</param>
+        private void SaveSettingsFile(string settingsFilePath, SettingsData settingsDataParam)
+        {
+            try
+            {
+                // Use stream writer
+                using (StreamWriter streamWriter = new StreamWriter(settingsFilePath, false))
+                {
+                    // Set xml serialzer
+                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(SettingsData));
+
+                    // Serialize settings data
+                    xmlSerializer.Serialize(streamWriter, settingsDataParam);
+                }
+            }
+            catch (Exception exception)
+            {
+                // Advise user
+                MessageBox.Show($"Error saving settings file.{Environment.NewLine}{Environment.NewLine}Message:{Environment.NewLine}{exception.Message}", "File error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
