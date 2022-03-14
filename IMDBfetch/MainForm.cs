@@ -8,8 +8,10 @@ namespace IMDBfetch
     // Directives
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Drawing;
     using System.IO;
+    using System.Net;
     using System.Windows.Forms;
     using System.Xml.Serialization;
     using PublicDomain;
@@ -19,6 +21,57 @@ namespace IMDBfetch
     /// </summary>
     public partial class MainForm : Form
     {
+        /// <summary>
+        /// The game search web client.
+        /// </summary>
+        private WebClient gameSearchWebClient = new WebClient();
+
+        /// <summary>
+        /// The game info web client.
+        /// </summary>
+        private WebClient gameInfoWebClient = new WebClient();
+
+        /// <summary>
+        /// The image web client.
+        /// </summary>
+        private WebClient imageWebClient = new WebClient();
+
+        /// <summary>
+        /// The directory.
+        /// </summary>
+        private string directory;
+
+        /// <summary>
+        /// The file path.
+        /// </summary>
+        private string filePath;
+
+        /// <summary>
+        /// The fetched count.
+        /// </summary>
+        private int fetchedCount = 0;
+
+        /// <summary>
+        /// Gets or sets the associated icon.
+        /// </summary>
+        /// <value>The associated icon.</value>
+        private Icon associatedIcon = null;
+
+        /// <summary>
+        /// The settings data.
+        /// </summary>
+        private SettingsData settingsData = null;
+
+        /// <summary>
+        /// The data table.
+        /// </summary>
+        private DataTable dataTable = new DataTable();
+
+        /// <summary>
+        /// The settings data path.
+        /// </summary>
+        private string settingsDataPath = $"{Application.ProductName}-SettingsData.txt";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="T:IMDBfetch.MainForm"/> class.
         /// </summary>
