@@ -204,7 +204,15 @@ namespace IMDBfetch
         /// <param name="e">Event arguments.</param>
         private void OnDirectoryTextBoxDragDrop(object sender, DragEventArgs e)
         {
-            // TODO Add code
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                var possibleDirectory = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                if (Directory.Exists(possibleDirectory[0]))
+                {
+                    this.directoryTextBox.Text = possibleDirectory[0];
+                }
+            }
         }
 
         /// <summary>
