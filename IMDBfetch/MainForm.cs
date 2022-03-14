@@ -241,6 +241,28 @@ namespace IMDBfetch
         }
 
         /// <summary>
+        /// Gets the name of the valid file path.
+        /// </summary>
+        /// <returns>The valid file path name.</returns>
+        /// <param name="rawName">Raw name.</param>
+        private string GetValidFilePathName(string rawName)
+        {
+            var invalidCharList = new List<char>();
+
+            invalidCharList.AddRange(Path.GetInvalidFileNameChars());
+
+            invalidCharList.AddRange(Path.GetInvalidPathChars());
+
+            foreach (var c in invalidCharList)
+            {
+                rawName = rawName.Replace(c.ToString(), string.Empty);
+            }
+
+            // Return processed raw name variable
+            return rawName;
+        }
+
+        /// <summary>
         /// Handles the main form load.
         /// </summary>
         /// <param name="sender">Sender object.</param>
