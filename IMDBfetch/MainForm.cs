@@ -170,6 +170,16 @@ namespace IMDBfetch
         }
 
         /// <summary>
+        /// Handles the main form load.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnMainFormLoad(object sender, EventArgs e)
+        {
+            // TODO Add code
+        }
+
+        /// <summary>
         /// Handles the main form form closing.
         /// </summary>
         /// <param name="sender">Sender object.</param>
@@ -180,13 +190,21 @@ namespace IMDBfetch
         }
 
         /// <summary>
-        /// Handles the main form load.
+        /// Loads the settings file.
         /// </summary>
-        /// <param name="sender">Sender object.</param>
-        /// <param name="e">Event arguments.</param>
-        private void OnMainFormLoad(object sender, EventArgs e)
+        /// <returns>The settings file.</returns>
+        /// <param name="settingsFilePath">Settings file path.</param>
+        private SettingsData LoadSettingsFile(string settingsFilePath)
         {
-            // TODO Add code
+            // Use file stream
+            using (FileStream fileStream = File.OpenRead(settingsFilePath))
+            {
+                // Set xml serialzer
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(SettingsData));
+
+                // Return populated settings data
+                return xmlSerializer.Deserialize(fileStream) as SettingsData;
+            }
         }
 
         /// <summary>
