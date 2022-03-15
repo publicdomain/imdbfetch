@@ -457,7 +457,15 @@ namespace IMDBfetch
         /// <param name="e">Event arguments.</param>
         private void OnMainFormFormClosing(object sender, FormClosingEventArgs e)
         {
-            // TODO Add code
+            /* Setiings data values */
+
+            // Set values
+            this.settingsData.Directory = this.directoryTextBox.Text;
+            this.settingsData.Location = this.Location;
+            this.settingsData.Size = this.Size;
+
+            // Save settings data to disk
+            this.SaveSettingsFile(this.settingsDataPath, this.settingsData);
         }
 
         /// <summary>
