@@ -82,6 +82,11 @@ namespace IMDBfetch
         private string settingsDataPath = $"{Application.ProductName}-SettingsData.txt";
 
         /// <summary>
+        /// The error log path.
+        /// </summary>
+        private string errorLogPath = "IMDBfetch-log.txt";
+
+        /// <summary>
         /// The target URI.
         /// </summary>
         private Uri targetUri = null;
@@ -202,7 +207,7 @@ namespace IMDBfetch
         /// <param name="e">Event arguments.</param>
         private void OnSearchDownloadStringCompleted(Object sender, DownloadStringCompletedEventArgs e)
         {
-            // TODO Add code
+
         }
 
         /// <summary>
@@ -233,6 +238,88 @@ namespace IMDBfetch
         private void OnApiCallsDownloadStringCompleted(Object sender, DownloadStringCompletedEventArgs e)
         {
             // TODO Add code
+        }
+
+        /// <summary>
+        /// Sorteds the data table to list box.
+        /// </summary>
+        private void SortedDataTableToListBox()
+        {
+            // Check for datatable rows
+            if (this.dataTable.Rows.Count == 0)
+            {
+                // Halt flow
+                return;
+            }
+
+            // Prevent drawing
+            this.searchListBox.BeginUpdate();
+
+            // Clear list box
+            this.searchListBox.Items.Clear();
+
+            // Set sorted datatable
+            DataTable sortedDataTable = this.dataTable.Clone();
+
+            sortedDataTable.Columns["ID"].DataType = System.Type.GetType("System.String");
+            sortedDataTable.Columns["Title"].DataType = System.Type.GetType("System.String");
+            sortedDataTable.Columns["Description"].DataType = System.Type.GetType("System.String");
+
+            // Check for desc
+            if (this.descCheckBox.Checked)
+            {
+                for (int i = this.dataTable.Rows.Count - 1; i >= 0; i--)
+                {
+                    sortedDataTable.ImportRow(this.dataTable.Rows[i]);
+                }
+            }
+            else
+            {
+                foreach (DataRow dataRow in this.dataTable.Rows)
+                {
+                    sortedDataTable.ImportRow(dataRow);
+                }
+            }
+
+            sortedDataTable.AcceptChanges();
+
+            // Set data view
+            DataView dataView = sortedDataTable.DefaultView;
+
+            // Sort data table
+            if (this.settingsData.SortRadioButton != "rawRadioButton")
+            {
+                // Sort by radio button
+                switch (this.settingsData.SortRadioButton)
+                {
+                    case "idRadioButton":
+                        dataView.Sort = $"ID{(this.descCheckBox.Checked ? " DESC" : string.Empty)}";
+
+                        break;
+
+                    case "descriptionRadioButton":
+                        dataView.Sort = $"Description{(this.descCheckBox.Checked ? " DESC" : string.Empty)}";
+
+                        break;
+
+                    case "titleRadioButton":
+                        dataView.Sort = $"Title{(this.descCheckBox.Checked ? " DESC" : string.Empty)}";
+
+                        break;
+                }
+            }
+
+            sortedDataTable = dataView.ToTable();
+
+            // Data table to list box
+            for (int i = 0; i < sortedDataTable.Rows.Count; i++)
+            {
+                // Add item
+                this.searchListBox.Items.Add($"{sortedDataTable.Rows[i]["ID"]} {sortedDataTable.Rows[i]["Title"]} {sortedDataTable.Rows[i]["Description"]}");
+            }
+
+            // Resume drawing
+            this.searchListBox.EndUpdate();
         }
 
         /// <summary>
@@ -295,7 +382,7 @@ namespace IMDBfetch
             catch (Exception ex)
             {
                 // Log to file
-                File.AppendAllText("BGGfetch-log.txt", $"{Environment.NewLine}{Environment.NewLine}Search exception message:{Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.StackTrace}");
+                File.AppendAllText(this.errorLogPath, $"{Environment.NewLine}{Environment.NewLine}Search exception message:{Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.StackTrace}");
 
                 // Advise user
                 this.resultToolStripStatusLabel.Text = $"Exception while searching. Please retry.";
