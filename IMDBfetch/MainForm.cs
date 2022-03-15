@@ -8,13 +8,16 @@ namespace IMDBfetch
     // Directives
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Data;
     using System.Diagnostics;
     using System.Drawing;
     using System.IO;
     using System.Net;
+    using System.Reflection;
     using System.Windows.Forms;
     using System.Xml.Serialization;
+    using Microsoft.VisualBasic;
     using PublicDomain;
 
     /// <summary>
@@ -23,19 +26,24 @@ namespace IMDBfetch
     public partial class MainForm : Form
     {
         /// <summary>
-        /// The game search web client.
+        /// The search web client.
         /// </summary>
-        private WebClient gameSearchWebClient = new WebClient();
+        private WebClient searchWebClient = new WebClient();
 
         /// <summary>
-        /// The game info web client.
+        /// The info web client.
         /// </summary>
-        private WebClient gameInfoWebClient = new WebClient();
+        private WebClient infoWebClient = new WebClient();
 
         /// <summary>
         /// The image web client.
         /// </summary>
         private WebClient imageWebClient = new WebClient();
+
+        /// <summary>
+        /// The API calls web client.
+        /// </summary>
+        private WebClient apiCallsWebClient = new WebClient();
 
         /// <summary>
         /// The directory.
@@ -74,12 +82,157 @@ namespace IMDBfetch
         private string settingsDataPath = $"{Application.ProductName}-SettingsData.txt";
 
         /// <summary>
+        /// The target URI.
+        /// </summary>
+        private Uri targetUri = null;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:IMDBfetch.MainForm"/> class.
         /// </summary>
         public MainForm()
         {
             // The InitializeComponent() call is required for Windows Forms designer support.
             this.InitializeComponent();
+
+            /* Set icons */
+
+            // Set associated icon from exe file
+            this.associatedIcon = Icon.ExtractAssociatedIcon(typeof(MainForm).GetTypeInfo().Assembly.Location);
+
+            // Set PublicDomain.is tool strip menu item image
+            this.freeReleasesPublicDomainIsToolStripMenuItem.Image = this.associatedIcon.ToBitmap();
+
+            // SSL fix
+            System.Net.ServicePointManager.Expect100Continue = true;
+            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
+
+            /* Data table */
+
+            DataColumn column1 = new DataColumn();
+            DataColumn column2 = new DataColumn();
+            DataColumn column3 = new DataColumn();
+            column1.DataType = System.Type.GetType("System.String");
+            column2.DataType = System.Type.GetType("System.String");
+            column3.DataType = System.Type.GetType("System.String");
+            column1.ColumnName = "ID";
+            column2.ColumnName = "Title";
+            column3.ColumnName = "Description";
+            dataTable.Columns.Add(column1);
+            dataTable.Columns.Add(column2);
+            dataTable.Columns.Add(column3);
+
+            /* Settings data */
+
+            // Saved settings flag
+            bool prevSettingsData = false;
+
+            // Check for settings file
+            if (!File.Exists(this.settingsDataPath))
+            {
+                // Create new settings file
+                this.SaveSettingsFile(this.settingsDataPath, new SettingsData());
+
+                // Center form
+                this.CenterToScreen();
+            }
+            else
+            {
+                // Set flag
+                prevSettingsData = true;
+            }
+
+            // Load settings from disk
+            this.settingsData = this.LoadSettingsFile(this.settingsDataPath);
+
+            // Check for previous settings
+            if (prevSettingsData)
+            {
+                // Set values
+                this.directoryTextBox.Text = this.settingsData.Directory;
+                this.Location = this.settingsData.Location;
+                this.Size = this.settingsData.Size;
+            }
+
+            // Check radio button
+            switch (this.settingsData.SortRadioButton)
+            {
+                case "rawRadioButton":
+                    this.rawRadioButton.Checked = true;
+
+                    break;
+
+                case "idRadioButton":
+                    this.idRadioButton.Checked = true;
+
+                    break;
+
+                case "titleRadioButton":
+                    this.titleRadioButton.Checked = true;
+
+                    break;
+
+                case "descriptionRadioButton":
+                    this.descriptionRadioButton.Checked = true;
+
+                    break;
+            }
+
+            // Desc
+            this.descCheckBox.Checked = this.settingsData.Desc;
+
+            /* WebClients */
+
+            this.searchWebClient.DownloadStringCompleted += new DownloadStringCompletedEventHandler(OnSearchDownloadStringCompleted);
+            this.searchWebClient.Proxy = null;
+
+            this.infoWebClient.DownloadStringCompleted += new DownloadStringCompletedEventHandler(OnInfoDownloadStringCompleted);
+            this.infoWebClient.Proxy = null;
+
+            this.imageWebClient.DownloadFileCompleted += new AsyncCompletedEventHandler(OnDownloadFileCompleted);
+            this.imageWebClient.Proxy = null;
+
+            this.apiCallsWebClient.DownloadStringCompleted += new DownloadStringCompletedEventHandler(OnApiCallsDownloadStringCompleted);
+            this.apiCallsWebClient.Proxy = null;
+        }
+
+        /// <summary>
+        /// Handles the search download string completed event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnSearchDownloadStringCompleted(Object sender, DownloadStringCompletedEventArgs e)
+        {
+            // TODO Add code
+        }
+
+        /// <summary>
+        /// Handles the info download string completed event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnInfoDownloadStringCompleted(Object sender, DownloadStringCompletedEventArgs e)
+        {
+            // TODO Add code
+        }
+
+        /// <summary>
+        /// Handles the download file completed.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnDownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            // TODO Add code
+        }
+
+        /// <summary>
+        /// Handles the api calls download string completed event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnApiCallsDownloadStringCompleted(Object sender, DownloadStringCompletedEventArgs e)
+        {
+            // TODO Add code
         }
 
         /// <summary>
@@ -134,7 +287,28 @@ namespace IMDBfetch
         /// <param name="e">Event arguments.</param>
         private void OnAPIKeyToolStripMenuItemClick(object sender, EventArgs e)
         {
-            // TODO Add code
+            // Get raw value
+            string userValue = Interaction.InputBox("API key from imdb-api.com )", "Edit key", this.settingsData.ApiKey);
+
+            // Check length
+            if (userValue.Length == 0)
+            {
+                // Halt flow
+                return;
+            }
+
+            try
+            {
+                // TODO Validate API key [StartsWith("k_")]
+
+                // Set API key
+                this.settingsData.ApiKey = userValue;
+            }
+            catch (Exception ex)
+            {
+                // Advise user
+                MessageBox.Show($"API key format error:{Environment.NewLine}{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
@@ -186,7 +360,8 @@ namespace IMDBfetch
         /// <param name="e">Event arguments.</param>
         private void OnSourceCodeGithubcomToolStripMenuItemClick(object sender, EventArgs e)
         {
-            // TODO Add code
+            // Open GitHub repository
+            Process.Start("https://github.com/publicdomain/imdbfetch/");
         }
 
         /// <summary>
