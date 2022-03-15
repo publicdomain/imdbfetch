@@ -242,7 +242,68 @@ namespace IMDBfetch
         /// <param name="e">Event arguments.</param>
         private void OnFetchButtonClick(object sender, EventArgs e)
         {
-            // TODO Add code
+            // Something to work with
+            if (this.searchTextBox.Text.Length == 0)
+            {
+                MessageBox.Show("Please enter a search term.", "Search", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                this.searchTextBox.Focus();
+
+                return;
+            }
+
+            // Valid directory
+            if (!Directory.Exists(this.directoryTextBox.Text))
+            {
+                MessageBox.Show("Target save directory must exist.", "Directory", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                this.directoryTextBox.Focus();
+
+                return;
+            }
+
+            // Disable
+            this.searchTextBox.Enabled = false;
+            this.fetchButton.Enabled = false;
+
+            // Set variables
+            this.directory = this.directoryTextBox.Text;
+
+            // Reset
+            this.infoRichTextBox.Clear();
+            this.imagePictureBox.Image = null;
+            this.searchListBox.Items.Clear();
+            this.searchJsonTextBox.Clear();
+            this.infoJsonTextBox.Clear();
+
+            /* Search game */
+
+            // Advise user
+            this.resultToolStripStatusLabel.Text = $"Searching for: \"{this.searchTextBox.Text}\"...";
+
+            // Focus search tab page
+            this.rawTabControl.SelectedTab = this.searchTabPage;
+
+            try
+            {
+                // Set target uri
+                this.targetUri = new Uri($"https://imdb-api.com/API/Search/{this.settingsData.ApiKey}/{Uri.EscapeDataString(this.searchTextBox.Text)}");
+
+                // Download xml for game id
+                this.searchWebClient.DownloadStringAsync(this.targetUri);
+            }
+            catch (Exception ex)
+            {
+                // Log to file
+                File.AppendAllText("BGGfetch-log.txt", $"{Environment.NewLine}{Environment.NewLine}Search exception message:{Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.StackTrace}");
+
+                // Advise user
+                this.resultToolStripStatusLabel.Text = $"Exception while searching. Please retry.";
+
+                // Enable
+                this.searchTextBox.Enabled = true;
+                this.fetchButton.Enabled = true;
+            }
         }
 
         /// <summary>
