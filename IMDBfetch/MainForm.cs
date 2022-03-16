@@ -424,7 +424,11 @@ namespace IMDBfetch
         /// <param name="e">Event arguments.</param>
         private void OnDescCheckBoxCheckedChanged(object sender, EventArgs e)
         {
-            // TODO Add code
+            // Save to settings data
+            this.settingsData.Desc = this.descCheckBox.Checked;
+
+            // Refresh list box
+            this.SortedDataTableToListBox();
         }
 
         /// <summary>
