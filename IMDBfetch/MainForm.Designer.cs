@@ -232,6 +232,7 @@ namespace IMDBfetch
             this.searchListBox.Name = "searchListBox";
             this.searchListBox.Size = new System.Drawing.Size(370, 155);
             this.searchListBox.TabIndex = 6;
+            this.searchListBox.SelectedIndexChanged += new System.EventHandler(this.OnSearchListBoxSelectedIndexChanged);
             // 
             // rawTabControl
             // 

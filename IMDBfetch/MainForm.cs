@@ -244,17 +244,17 @@ namespace IMDBfetch
                 switch (this.settingsData.SortRadioButton)
                 {
                     case "idRadioButton":
-                        dataView.Sort = $"ID{(this.descCheckBox.Checked ? " DESC" : string.Empty)}";
+                        //#                        dataView.Sort = $"ID{(this.descCheckBox.Checked ? " DESC" : string.Empty)}";
 
                         break;
 
                     case "descriptionRadioButton":
-                        dataView.Sort = $"Description{(this.descCheckBox.Checked ? " DESC" : string.Empty)}";
+                        //#                        dataView.Sort = $"Description{(this.descCheckBox.Checked ? " DESC" : string.Empty)}";
 
                         break;
 
                     case "titleRadioButton":
-                        dataView.Sort = $"Title{(this.descCheckBox.Checked ? " DESC" : string.Empty)}";
+                        //#                        dataView.Sort = $"Title{(this.descCheckBox.Checked ? " DESC" : string.Empty)}";
 
                         break;
                 }
@@ -266,7 +266,7 @@ namespace IMDBfetch
             for (int i = 0; i < sortedDataTable.Rows.Count; i++)
             {
                 // Add item
-                this.searchListBox.Items.Add($"{sortedDataTable.Rows[i]["ID"]} {sortedDataTable.Rows[i]["Title"]} {sortedDataTable.Rows[i]["Description"]}");
+                //#                this.searchListBox.Items.Add($"{sortedDataTable.Rows[i]["ID"]} {sortedDataTable.Rows[i]["Title"]} {sortedDataTable.Rows[i]["Description"]}");
             }
 
             // Resume drawing
@@ -386,6 +386,80 @@ namespace IMDBfetch
             // Enable
             this.searchTextBox.Enabled = true;
             this.fetchButton.Enabled = true;
+        }
+
+        /// <summary>
+        /// Handles the search list box selected index changed.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private async void OnSearchListBoxSelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Ensure there's a selected item
+            if (this.searchListBox.SelectedIndex == -1)
+            {
+                return;
+            }
+
+            /* Download info */
+
+            // Set selected item 
+            var searchListBoxSelectedItem = this.searchListBox.SelectedItem.ToString();
+
+            // Disable
+            this.searchListBox.Enabled = false;
+
+            try
+            {
+                // Disable
+                this.searchListBox.Enabled = false;
+
+                // Split list item
+                var item = searchListBoxSelectedItem.Split(new char[] { ' ' }, 2);
+
+                // Set vars
+                var id = item[0];
+                var title = item[1];
+
+                // Set data row
+                DataRow[] dataRowArray = this.dataTable.Select($"ID = '{id}'");
+
+                // Update status
+                this.resultToolStripStatusLabel.Text = $"Downloading info: \"{title.Substring(0, 25)}\"...";
+
+                /* Get wikiṕedia */
+                var apiLib = new ApiLib($"{ this.settingsData.ApiKey }");
+
+                // Search
+                var data = await apiLib.WikipediaAsync(id, IMDbApiLib.Models.Language.en);
+
+                // Check for error
+                if (data.ErrorMessage.Length > 0)
+                {
+                    // Halt flow
+                    throw new Exception($"Error when download info for \"{title.Substring(0, 25)}\": {data.ErrorMessage}");
+                }
+
+                // Set into rich text box
+                this.infoRichTextBox.Text = $"{data.Title}{Environment.NewLine}{data.PlotFull.PlainText}";
+
+                //  Set image URL
+                var imageUrl = dataRowArray[0]["Image"].ToString();
+
+                // Download image
+                this.imageWebClient.DownloadFileAsync(new Uri(imageUrl), Path.Combine(this.directory, this.GetValidFilePathName($"{title}{Path.GetExtension(imageUrl)}")));
+            }
+            catch (Exception ex)
+            {
+                // Log to file
+                File.AppendAllText(this.errorLogPath, $"{Environment.NewLine}{Environment.NewLine}Info exception message:{Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.Message}");
+
+                // Advise user
+                this.resultToolStripStatusLabel.Text = $"Exception while fetching info. Please retry.";
+            }
+
+            // Enable
+            this.searchListBox.Enabled = true;
         }
 
         /// <summary>
@@ -599,45 +673,6 @@ namespace IMDBfetch
         {
             // Focus search text box
             this.searchTextBox.Focus();
-
-            /*// Set JSON contents
-            string json = File.ReadAllText("ice.json"); ;
-
-            // Populate search JSON text box
-            this.searchJsonTextBox.Text = json;
-
-            // Process fetched JSON
-
-            SearchData searchData = JsonConvert.DeserializeObject<SearchData>(json);
-
-            // Check for error
-            if (searchData.ErrorMessage.Length > 0)
-            {
-                /* TODO Error: advise, log & halt flow /
-
-                // Halt flow
-                return;
-            }
-
-            /* Extract fields /
-
-            foreach (var result in searchData.Results)
-            {
-                DataRow row = this.dataTable.NewRow();
-
-                /* Set values /
-
-                row["ID"] = result.Id;
-                row["Title"] = result.Title;
-                row["Description"] = result.Description;
-                row["Image"] = result.Image;
-
-                // Add to data table
-                this.dataTable.Rows.Add(row);
-            }
-
-            // Populate list box
-            this.SortedDataTableToListBox();*/
         }
 
         /// <summary>
