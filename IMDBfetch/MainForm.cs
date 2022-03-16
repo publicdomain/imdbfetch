@@ -78,6 +78,16 @@ namespace IMDBfetch
         private string imageFilePath = string.Empty;
 
         /// <summary>
+        /// The server API calls.
+        /// </summary>
+        private int serverApiCalls = 0;
+
+        /// <summary>
+        /// The local API calls.
+        /// </summary>
+        private int localApiCalls = 0;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:IMDBfetch.MainForm"/> class.
         /// </summary>
         public MainForm()
@@ -94,8 +104,9 @@ namespace IMDBfetch
             this.freeReleasesPublicDomainIsToolStripMenuItem.Image = this.associatedIcon.ToBitmap();
 
             // SSL fix
-            System.Net.ServicePointManager.Expect100Continue = true;
-            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
+            //System.Net.ServicePointManager.Expect100Continue = true;
+            //System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
+            System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; }; // DEBUG, Linux
 
             /* Data table */
 
@@ -196,6 +207,9 @@ namespace IMDBfetch
             }
             else
             {
+                // Advise user
+                this.resultToolStripStatusLabel.Text = $"Image download retry...";
+
                 // Download image (Retry)
                 this.imageWebClient.DownloadFileAsync(this.imageUri, this.imageFilePath);
             }
@@ -344,8 +358,11 @@ namespace IMDBfetch
             {
                 var apiLib = new ApiLib($"{ this.settingsData.ApiKey }");
 
+                // Raise local api calls
+                this.localApiCalls++;
+
                 // Search
-                var data = await apiLib.SearchMovieAsync(this.searchTextBox.Text);
+                var data = await apiLib.SearchAsync(this.searchTextBox.Text);
 
                 // Check for error
                 if (data.ErrorMessage.Length > 0)
@@ -393,6 +410,9 @@ namespace IMDBfetch
                 this.resultToolStripStatusLabel.Text = $"Exception while searching. Please retry.";
             }
 
+            // Update api calls count
+            this.UpdateAPiCalls();
+
             // Enable
             this.searchTextBox.Enabled = true;
             this.fetchButton.Enabled = true;
@@ -420,6 +440,7 @@ namespace IMDBfetch
             this.searchListBox.Enabled = false;
 
             try
+
             {
                 // Disable
                 this.searchListBox.Enabled = false;
@@ -435,10 +456,13 @@ namespace IMDBfetch
                 DataRow[] dataRowArray = this.dataTable.Select($"ID = '{id}'");
 
                 // Update status
-                this.resultToolStripStatusLabel.Text = $"Downloading info: \"{title.Substring(0, 25)}\"...";
+                this.resultToolStripStatusLabel.Text = $"Downloading info: \"{title.Substring(0, Math.Min(title.Length, 25))}\"...";
 
                 /* Get wikiṕedia */
                 var apiLib = new ApiLib($"{ this.settingsData.ApiKey }");
+
+                // Raise local api calls
+                this.localApiCalls++;
 
                 // Search
                 var data = await apiLib.WikipediaAsync(id, IMDbApiLib.Models.Language.en);
@@ -447,11 +471,11 @@ namespace IMDBfetch
                 if (data.ErrorMessage.Length > 0)
                 {
                     // Halt flow
-                    throw new Exception($"Error when download info for \"{title.Substring(0, 25)}\": {data.ErrorMessage}");
+                    throw new Exception($"Error when download info for \"{title.Substring(0, Math.Min(title.Length, 25))}\": {data.ErrorMessage}");
                 }
 
                 // Set into rich text box
-                this.infoRichTextBox.Text = $"{data.Title}{Environment.NewLine}{data.PlotFull.PlainText}";
+                this.infoRichTextBox.Text = $"Name: {data.Title}{Environment.NewLine}Year: {data.Year}{Environment.NewLine}{Environment.NewLine}{data.PlotFull.PlainText}";
 
                 //  Set image uri
                 this.imageUri = new Uri(dataRowArray[0]["Image"].ToString());
@@ -471,8 +495,20 @@ namespace IMDBfetch
                 this.resultToolStripStatusLabel.Text = $"Exception while fetching info. Please retry.";
             }
 
+            // Update api calls count
+            this.UpdateAPiCalls();
+
             // Enable
             this.searchListBox.Enabled = true;
+        }
+
+        /// <summary>
+        /// Updates the AP i calls.
+        /// </summary>
+        private void UpdateAPiCalls()
+        {
+            // TODO Update to proper label name
+            this.toolStripStatusLabel3.Text = this.serverApiCalls == 0 ? $"+{this.localApiCalls}" : $"{this.serverApiCalls + this.localApiCalls}";
         }
 
         /// <summary>
