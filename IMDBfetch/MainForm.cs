@@ -620,7 +620,6 @@ namespace IMDBfetch
             // TODO Add code
         }
 
-
         /// <summary>
         /// Handles the free releases public domain is tool strip menu item click.
         /// </summary>
@@ -651,6 +650,60 @@ namespace IMDBfetch
         {
             // Open GitHub repository
             Process.Start("https://github.com/publicdomain/imdbfetch/");
+        }
+
+        /// <summary>
+        /// Ons the get APIC alls tool strip menu item click.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private async void OnGetAPICallsToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            try
+            {
+                /* Get wikiṕedia */
+                var apiLib = new ApiLib($"{ this.settingsData.ApiKey }");
+
+                // Search
+                var data = await apiLib.UsageAsync();
+
+                // Check for error
+                if (data.ErrorMessage.Length > 0)
+                {
+                    // Halt flow
+                    throw new Exception($"Error when getting API calls count: {data.ErrorMessage}");
+                }
+
+                // Set server count
+                this.serverApiCalls = data.Count;
+
+                // Update API calls
+                this.UpdateAPiCalls();
+            }
+            catch (Exception ex)
+            {
+                // Set message
+                var message = $"{Environment.NewLine}{Environment.NewLine}Get APi calls exception message:{Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.Message}";
+
+                // Log to file
+                File.AppendAllText(this.errorLogPath, message);
+
+                // Advise user
+                this.exceptionTextBox.Text = message;
+
+                this.logTabControl.SelectedTab = this.exceptionTabPage;
+            }
+        }
+
+        /// <summary>
+        /// Ons the get API Key tool strip menu item click.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnGetAPIKeyToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            // Open imdb-api.com's account registration page
+            Process.Start("https://imdb-api.com/Identity/Account/Register");
         }
 
         /// <summary>
@@ -848,26 +901,6 @@ namespace IMDBfetch
                 // Advise user
                 MessageBox.Show($"Error saving settings file.{Environment.NewLine}{Environment.NewLine}Message:{Environment.NewLine}{exception.Message}", "File error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        /// <summary>
-        /// Ons the get APIC alls tool strip menu item click.
-        /// </summary>
-        /// <param name="sender">Sender object.</param>
-        /// <param name="e">Event arguments.</param>
-        private void OnGetAPICallsToolStripMenuItemClick(object sender, EventArgs e)
-        {
-            // TODO Add code
-        }
-
-        /// <summary>
-        /// Ons the get APIK ei tool strip menu item click.
-        /// </summary>
-        /// <param name="sender">Sender object.</param>
-        /// <param name="e">Event arguments.</param>
-        private void OnGetAPIKeiToolStripMenuItemClick(object sender, EventArgs e)
-        {
-            // TODO Add code
         }
 
         /// <summary>

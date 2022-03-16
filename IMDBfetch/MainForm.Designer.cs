@@ -81,7 +81,7 @@ namespace IMDBfetch
             this.originalThreadDonationCodercomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sourceCodeGithubcomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.getAPIKeiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.getAPIKeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainStatusStrip = new System.Windows.Forms.StatusStrip();
@@ -595,7 +595,7 @@ namespace IMDBfetch
                                     this.originalThreadDonationCodercomToolStripMenuItem,
                                     this.sourceCodeGithubcomToolStripMenuItem,
                                     this.toolStripSeparator2,
-                                    this.getAPIKeiToolStripMenuItem,
+                                    this.getAPIKeyToolStripMenuItem,
                                     this.toolStripSeparator1,
                                     this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
@@ -630,12 +630,12 @@ namespace IMDBfetch
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(275, 6);
             // 
-            // getAPIKeiToolStripMenuItem
+            // getAPIKeyToolStripMenuItem
             // 
-            this.getAPIKeiToolStripMenuItem.Name = "getAPIKeiToolStripMenuItem";
-            this.getAPIKeiToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
-            this.getAPIKeiToolStripMenuItem.Text = "&Get API kei";
-            this.getAPIKeiToolStripMenuItem.Click += new System.EventHandler(this.OnGetAPIKeiToolStripMenuItemClick);
+            this.getAPIKeyToolStripMenuItem.Name = "getAPIKeyToolStripMenuItem";
+            this.getAPIKeyToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
+            this.getAPIKeyToolStripMenuItem.Text = "&Get API key";
+            this.getAPIKeyToolStripMenuItem.Click += new System.EventHandler(this.OnGetAPIKeyToolStripMenuItemClick);
             // 
             // toolStripSeparator1
             // 
@@ -749,7 +749,7 @@ namespace IMDBfetch
             this.PerformLayout();
         }
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem getAPIKeiToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem getAPIKeyToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel4;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
