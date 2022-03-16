@@ -204,6 +204,9 @@ namespace IMDBfetch
             {
                 // Load picture
                 this.imagePictureBox.Image = Image.FromFile(this.imageFilePath);
+
+                // Advise user
+                this.resultToolStripStatusLabel.Text = $"Info and image downloaded.";
             }
             else
             {
