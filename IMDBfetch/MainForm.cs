@@ -617,7 +617,21 @@ namespace IMDBfetch
         /// <param name="e">Event arguments.</param>
         private void OnNewToolStripMenuItemClick(object sender, EventArgs e)
         {
-            // TODO Add code
+            this.searchTextBox.Clear();
+
+            this.directoryTextBox.Clear();
+
+            this.searchListBox.Items.Clear();
+
+            this.fetchedCount = 0;
+            this.fetchedCountToolStripStatusLabel.Text = "0";
+
+            this.infoRichTextBox.Clear();
+            this.imagePictureBox.Image = null;
+
+            this.searchTextBox.Focus();
+
+            this.resultToolStripStatusLabel.Text = "Waiting for a search term to fetch...";
         }
 
         /// <summary>
