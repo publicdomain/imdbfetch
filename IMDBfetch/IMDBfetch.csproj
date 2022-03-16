@@ -7,7 +7,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>IMDBfetch</RootNamespace>
     <AssemblyName>IMDBfetch</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <ApplicationIcon>Resources\publicdomain.com_7-8-vista-xp.ico</ApplicationIcon>
     <NoWin32Manifest>False</NoWin32Manifest>
@@ -47,6 +47,9 @@
     <Reference Include="System.Xml.Linq">
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="IMDbApiLib">
+      <HintPath>Resources\IMDbApiLib.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AboutForm.cs" />
@@ -60,15 +63,12 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingsData.cs" />
-    <Compile Include="SearchData.cs" />
-    <Compile Include="WikipediaData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="Resources\clapperboard_gb1f459c2c_640_sVg_icon.ico" />
     <None Include="Resources\publicdomain.com_7-8-vista-xp.ico" />
-    <None Include="Resources\Newtonsoft.Json.dll" />
-    <None Include="Resources\Newtonsoft.Json-LICENSE.md" />
+    <None Include="Resources\IMDbApiLib.dll" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AboutForm.resx">

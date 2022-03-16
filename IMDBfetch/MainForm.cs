@@ -17,6 +17,7 @@ namespace IMDBfetch
     using System.Reflection;
     using System.Windows.Forms;
     using System.Xml.Serialization;
+    using IMDbApiLib;
     using Microsoft.VisualBasic;
     using PublicDomain;
 
@@ -26,24 +27,9 @@ namespace IMDBfetch
     public partial class MainForm : Form
     {
         /// <summary>
-        /// The search web client.
-        /// </summary>
-        private WebClient searchWebClient = new WebClient();
-
-        /// <summary>
-        /// The info web client.
-        /// </summary>
-        private WebClient infoWebClient = new WebClient();
-
-        /// <summary>
         /// The image web client.
         /// </summary>
         private WebClient imageWebClient = new WebClient();
-
-        /// <summary>
-        /// The API calls web client.
-        /// </summary>
-        private WebClient apiCallsWebClient = new WebClient();
 
         /// <summary>
         /// The directory.
@@ -116,15 +102,19 @@ namespace IMDBfetch
             DataColumn column1 = new DataColumn();
             DataColumn column2 = new DataColumn();
             DataColumn column3 = new DataColumn();
+            DataColumn column4 = new DataColumn();
             column1.DataType = System.Type.GetType("System.String");
             column2.DataType = System.Type.GetType("System.String");
+            column3.DataType = System.Type.GetType("System.String");
             column3.DataType = System.Type.GetType("System.String");
             column1.ColumnName = "ID";
             column2.ColumnName = "Title";
             column3.ColumnName = "Description";
+            column4.ColumnName = "Image";
             dataTable.Columns.Add(column1);
             dataTable.Columns.Add(column2);
             dataTable.Columns.Add(column3);
+            dataTable.Columns.Add(column4);
 
             /* Settings data */
 
@@ -185,39 +175,10 @@ namespace IMDBfetch
             // Desc
             this.descCheckBox.Checked = this.settingsData.Desc;
 
-            /* WebClients */
-
-            this.searchWebClient.DownloadStringCompleted += new DownloadStringCompletedEventHandler(OnSearchDownloadStringCompleted);
-            this.searchWebClient.Proxy = null;
-
-            this.infoWebClient.DownloadStringCompleted += new DownloadStringCompletedEventHandler(OnInfoDownloadStringCompleted);
-            this.infoWebClient.Proxy = null;
+            /* WebClient */
 
             this.imageWebClient.DownloadFileCompleted += new AsyncCompletedEventHandler(OnDownloadFileCompleted);
             this.imageWebClient.Proxy = null;
-
-            this.apiCallsWebClient.DownloadStringCompleted += new DownloadStringCompletedEventHandler(OnApiCallsDownloadStringCompleted);
-            this.apiCallsWebClient.Proxy = null;
-        }
-
-        /// <summary>
-        /// Handles the search download string completed event.
-        /// </summary>
-        /// <param name="sender">Sender object.</param>
-        /// <param name="e">Event arguments.</param>
-        private void OnSearchDownloadStringCompleted(Object sender, DownloadStringCompletedEventArgs e)
-        {
-
-        }
-
-        /// <summary>
-        /// Handles the info download string completed event.
-        /// </summary>
-        /// <param name="sender">Sender object.</param>
-        /// <param name="e">Event arguments.</param>
-        private void OnInfoDownloadStringCompleted(Object sender, DownloadStringCompletedEventArgs e)
-        {
-            // TODO Add code
         }
 
         /// <summary>
@@ -226,16 +187,6 @@ namespace IMDBfetch
         /// <param name="sender">Sender object.</param>
         /// <param name="e">Event arguments.</param>
         private void OnDownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
-        {
-            // TODO Add code
-        }
-
-        /// <summary>
-        /// Handles the api calls download string completed event.
-        /// </summary>
-        /// <param name="sender">Sender object.</param>
-        /// <param name="e">Event arguments.</param>
-        private void OnApiCallsDownloadStringCompleted(Object sender, DownloadStringCompletedEventArgs e)
         {
             // TODO Add code
         }
@@ -327,7 +278,7 @@ namespace IMDBfetch
         /// </summary>
         /// <param name="sender">Sender object.</param>
         /// <param name="e">Event arguments.</param>
-        private void OnFetchButtonClick(object sender, EventArgs e)
+        private async void OnFetchButtonClick(object sender, EventArgs e)
         {
             // Something to work with
             if (this.searchTextBox.Text.Length == 0)
@@ -349,6 +300,14 @@ namespace IMDBfetch
                 return;
             }
 
+            // Empty api key
+            if (this.settingsData.ApiKey.Length == 0)
+            {
+                MessageBox.Show($"Please set API key.{Environment.NewLine}(Tools/Settings/API key)", "Set imdb-api.com key", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                return;
+            }
+
             // Disable
             this.searchTextBox.Enabled = false;
             this.fetchButton.Enabled = false;
@@ -363,7 +322,7 @@ namespace IMDBfetch
             this.searchJsonTextBox.Clear();
             this.infoJsonTextBox.Clear();
 
-            /* Search game */
+            /* Search */
 
             // Advise user
             this.resultToolStripStatusLabel.Text = $"Searching for: \"{this.searchTextBox.Text}\"...";
@@ -373,11 +332,47 @@ namespace IMDBfetch
 
             try
             {
-                // Set target uri
-                this.targetUri = new Uri($"https://imdb-api.com/API/Search/{this.settingsData.ApiKey}/{Uri.EscapeDataString(this.searchTextBox.Text)}");
+                var apiLib = new ApiLib($"{ this.settingsData.ApiKey }");
 
-                // Download xml for game id
-                this.searchWebClient.DownloadStringAsync(this.targetUri);
+                // Search
+                var data = await apiLib.SearchMovieAsync(this.searchTextBox.Text);
+
+                // Check for error
+                if (data.ErrorMessage.Length > 0)
+                {
+                    // Halt flow
+                    throw new Exception($"Error when searching for \"{searchTextBox.Text}\": {data.ErrorMessage}");
+                }
+
+                // Clear data table
+                this.dataTable.Rows.Clear();
+
+                /* Extract fields */
+
+                foreach (var result in data.Results)
+                {
+                    DataRow row = this.dataTable.NewRow();
+
+                    /* Set values */
+
+                    row["ID"] = result.Id;
+                    row["Title"] = result.Title;
+                    row["Description"] = result.Description;
+                    row["Image"] = result.Image;
+
+                    // Add to data table
+                    this.dataTable.Rows.Add(row);
+                }
+
+                // Populate list box
+                this.SortedDataTableToListBox();
+
+                // Advise user
+                this.resultToolStripStatusLabel.Text = "Please click a result to process";
+
+                // Update fetched count
+                this.fetchedCount++;
+                this.fetchedCountToolStripStatusLabel.Text = this.fetchedCount.ToString();
             }
             catch (Exception ex)
             {
@@ -386,11 +381,11 @@ namespace IMDBfetch
 
                 // Advise user
                 this.resultToolStripStatusLabel.Text = $"Exception while searching. Please retry.";
-
-                // Enable
-                this.searchTextBox.Enabled = true;
-                this.fetchButton.Enabled = true;
             }
+
+            // Enable
+            this.searchTextBox.Enabled = true;
+            this.fetchButton.Enabled = true;
         }
 
         /// <summary>
@@ -415,7 +410,11 @@ namespace IMDBfetch
         /// <param name="e">Event arguments.</param>
         private void OnRadioButtonCheckedChanged(object sender, EventArgs e)
         {
-            // TODO Add code
+            // Save to settings data
+            this.settingsData.SortRadioButton = ((RadioButton)sender).Name;
+
+            // Refresh list box
+            this.SortedDataTableToListBox();
         }
 
         /// <summary>
@@ -596,6 +595,45 @@ namespace IMDBfetch
         {
             // Focus search text box
             this.searchTextBox.Focus();
+
+            /*// Set JSON contents
+            string json = File.ReadAllText("ice.json"); ;
+
+            // Populate search JSON text box
+            this.searchJsonTextBox.Text = json;
+
+            // Process fetched JSON
+
+            SearchData searchData = JsonConvert.DeserializeObject<SearchData>(json);
+
+            // Check for error
+            if (searchData.ErrorMessage.Length > 0)
+            {
+                /* TODO Error: advise, log & halt flow /
+
+                // Halt flow
+                return;
+            }
+
+            /* Extract fields /
+
+            foreach (var result in searchData.Results)
+            {
+                DataRow row = this.dataTable.NewRow();
+
+                /* Set values /
+
+                row["ID"] = result.Id;
+                row["Title"] = result.Title;
+                row["Description"] = result.Description;
+                row["Image"] = result.Image;
+
+                // Add to data table
+                this.dataTable.Rows.Add(row);
+            }
+
+            // Populate list box
+            this.SortedDataTableToListBox();*/
         }
 
         /// <summary>
