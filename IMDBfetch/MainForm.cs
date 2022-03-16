@@ -37,11 +37,6 @@ namespace IMDBfetch
         private string directory;
 
         /// <summary>
-        /// The file path.
-        /// </summary>
-        private string filePath;
-
-        /// <summary>
         /// The fetched count.
         /// </summary>
         private int fetchedCount = 0;
@@ -73,9 +68,14 @@ namespace IMDBfetch
         private string errorLogPath = "IMDBfetch-log.txt";
 
         /// <summary>
-        /// The target URI.
+        /// The image URI.
         /// </summary>
-        private Uri targetUri = null;
+        private Uri imageUri = null;
+
+        /// <summary>
+        /// The file path.
+        /// </summary>
+        private string imageFilePath = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:IMDBfetch.MainForm"/> class.
@@ -188,7 +188,17 @@ namespace IMDBfetch
         /// <param name="e">Event arguments.</param>
         private void OnDownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            // TODO Add code
+            // Try to load
+            if (File.Exists(this.imageFilePath))
+            {
+                // Load picture
+                this.imagePictureBox.Image = Image.FromFile(this.imageFilePath);
+            }
+            else
+            {
+                // Download image (Retry)
+                this.imageWebClient.DownloadFileAsync(this.imageUri, this.imageFilePath);
+            }
         }
 
         /// <summary>
@@ -244,17 +254,17 @@ namespace IMDBfetch
                 switch (this.settingsData.SortRadioButton)
                 {
                     case "idRadioButton":
-                        //#                        dataView.Sort = $"ID{(this.descCheckBox.Checked ? " DESC" : string.Empty)}";
+                        dataView.Sort = $"ID{(this.descCheckBox.Checked ? " DESC" : string.Empty)}";
 
                         break;
 
                     case "descriptionRadioButton":
-                        //#                        dataView.Sort = $"Description{(this.descCheckBox.Checked ? " DESC" : string.Empty)}";
+                        dataView.Sort = $"Description{(this.descCheckBox.Checked ? " DESC" : string.Empty)}";
 
                         break;
 
                     case "titleRadioButton":
-                        //#                        dataView.Sort = $"Title{(this.descCheckBox.Checked ? " DESC" : string.Empty)}";
+                        dataView.Sort = $"Title{(this.descCheckBox.Checked ? " DESC" : string.Empty)}";
 
                         break;
                 }
@@ -266,7 +276,7 @@ namespace IMDBfetch
             for (int i = 0; i < sortedDataTable.Rows.Count; i++)
             {
                 // Add item
-                //#                this.searchListBox.Items.Add($"{sortedDataTable.Rows[i]["ID"]} {sortedDataTable.Rows[i]["Title"]} {sortedDataTable.Rows[i]["Description"]}");
+                this.searchListBox.Items.Add($"{sortedDataTable.Rows[i]["ID"]} {sortedDataTable.Rows[i]["Title"]} {sortedDataTable.Rows[i]["Description"]}");
             }
 
             // Resume drawing
@@ -443,11 +453,14 @@ namespace IMDBfetch
                 // Set into rich text box
                 this.infoRichTextBox.Text = $"{data.Title}{Environment.NewLine}{data.PlotFull.PlainText}";
 
-                //  Set image URL
-                var imageUrl = dataRowArray[0]["Image"].ToString();
+                //  Set image uri
+                this.imageUri = new Uri(dataRowArray[0]["Image"].ToString());
+
+                // Set image file path
+                this.imageFilePath = Path.Combine(this.directory, this.GetValidFilePathName($"{title}{Path.GetExtension(dataRowArray[0]["Image"].ToString())}"));
 
                 // Download image
-                this.imageWebClient.DownloadFileAsync(new Uri(imageUrl), Path.Combine(this.directory, this.GetValidFilePathName($"{title}{Path.GetExtension(imageUrl)}")));
+                this.imageWebClient.DownloadFileAsync(this.imageUri, this.imageFilePath);
             }
             catch (Exception ex)
             {
@@ -636,7 +649,7 @@ namespace IMDBfetch
         {
             if (e.Button == MouseButtons.Left)
             {
-                var files = new string[] { this.filePath };
+                var files = new string[] { this.imageFilePath };
 
                 this.imagePictureBox.DoDragDrop(new DataObject(DataFormats.FileDrop, files), DragDropEffects.Copy | DragDropEffects.Move);
             }
