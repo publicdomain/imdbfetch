@@ -43,10 +43,14 @@ namespace IMDBfetch
             this.searchTextBox = new System.Windows.Forms.TextBox();
             this.searchListBox = new System.Windows.Forms.ListBox();
             this.logTabControl = new System.Windows.Forms.TabControl();
-            this.exceptionTabPage = new System.Windows.Forms.TabPage();
-            this.exceptionTextBox = new System.Windows.Forms.TextBox();
+            this.searchTabPage = new System.Windows.Forms.TabPage();
+            this.searchLogTextBox = new System.Windows.Forms.TextBox();
+            this.infoTabPage = new System.Windows.Forms.TabPage();
+            this.infoLogTextBox = new System.Windows.Forms.TextBox();
+            this.callsTabPage = new System.Windows.Forms.TabPage();
+            this.apiCallsLogTextBox = new System.Windows.Forms.TextBox();
             this.errorlTabPage = new System.Windows.Forms.TabPage();
-            this.errorTextBox = new System.Windows.Forms.TextBox();
+            this.errorLogTextBox = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.rawRadioButton = new System.Windows.Forms.RadioButton();
             this.descriptionRadioButton = new System.Windows.Forms.RadioButton();
@@ -95,7 +99,9 @@ namespace IMDBfetch
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.mainTableLayoutPanel.SuspendLayout();
             this.logTabControl.SuspendLayout();
-            this.exceptionTabPage.SuspendLayout();
+            this.searchTabPage.SuspendLayout();
+            this.infoTabPage.SuspendLayout();
+            this.callsTabPage.SuspendLayout();
             this.errorlTabPage.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
@@ -236,7 +242,9 @@ namespace IMDBfetch
             // logTabControl
             // 
             this.mainTableLayoutPanel.SetColumnSpan(this.logTabControl, 2);
-            this.logTabControl.Controls.Add(this.exceptionTabPage);
+            this.logTabControl.Controls.Add(this.searchTabPage);
+            this.logTabControl.Controls.Add(this.infoTabPage);
+            this.logTabControl.Controls.Add(this.callsTabPage);
             this.logTabControl.Controls.Add(this.errorlTabPage);
             this.logTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.logTabControl.Location = new System.Drawing.Point(3, 359);
@@ -245,49 +253,89 @@ namespace IMDBfetch
             this.logTabControl.Size = new System.Drawing.Size(370, 102);
             this.logTabControl.TabIndex = 8;
             // 
-            // exceptionTabPage
+            // searchTabPage
             // 
-            this.exceptionTabPage.Controls.Add(this.exceptionTextBox);
-            this.exceptionTabPage.Location = new System.Drawing.Point(4, 22);
-            this.exceptionTabPage.Name = "exceptionTabPage";
-            this.exceptionTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.exceptionTabPage.Size = new System.Drawing.Size(362, 76);
-            this.exceptionTabPage.TabIndex = 0;
-            this.exceptionTabPage.Text = "Exception";
-            this.exceptionTabPage.UseVisualStyleBackColor = true;
+            this.searchTabPage.Controls.Add(this.searchLogTextBox);
+            this.searchTabPage.Location = new System.Drawing.Point(4, 22);
+            this.searchTabPage.Name = "searchTabPage";
+            this.searchTabPage.Size = new System.Drawing.Size(362, 76);
+            this.searchTabPage.TabIndex = 2;
+            this.searchTabPage.Text = "Search";
+            this.searchTabPage.UseVisualStyleBackColor = true;
             // 
-            // exceptionTextBox
+            // searchLogTextBox
             // 
-            this.exceptionTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.exceptionTextBox.Location = new System.Drawing.Point(3, 3);
-            this.exceptionTextBox.Multiline = true;
-            this.exceptionTextBox.Name = "exceptionTextBox";
-            this.exceptionTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.exceptionTextBox.Size = new System.Drawing.Size(356, 70);
-            this.exceptionTextBox.TabIndex = 0;
-            this.exceptionTextBox.WordWrap = false;
+            this.searchLogTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.searchLogTextBox.Location = new System.Drawing.Point(0, 0);
+            this.searchLogTextBox.Multiline = true;
+            this.searchLogTextBox.Name = "searchLogTextBox";
+            this.searchLogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.searchLogTextBox.Size = new System.Drawing.Size(362, 76);
+            this.searchLogTextBox.TabIndex = 4;
+            this.searchLogTextBox.WordWrap = true;
+            // 
+            // infoTabPage
+            // 
+            this.infoTabPage.Controls.Add(this.infoLogTextBox);
+            this.infoTabPage.Location = new System.Drawing.Point(4, 22);
+            this.infoTabPage.Name = "infoTabPage";
+            this.infoTabPage.Size = new System.Drawing.Size(362, 76);
+            this.infoTabPage.TabIndex = 3;
+            this.infoTabPage.Text = "Info";
+            this.infoTabPage.UseVisualStyleBackColor = true;
+            // 
+            // infoLogTextBox
+            // 
+            this.infoLogTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.infoLogTextBox.Location = new System.Drawing.Point(0, 0);
+            this.infoLogTextBox.Multiline = true;
+            this.infoLogTextBox.Name = "infoLogTextBox";
+            this.infoLogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.infoLogTextBox.Size = new System.Drawing.Size(362, 76);
+            this.infoLogTextBox.TabIndex = 4;
+            this.infoLogTextBox.WordWrap = true;
+            // 
+            // callsTabPage
+            // 
+            this.callsTabPage.Controls.Add(this.apiCallsLogTextBox);
+            this.callsTabPage.Location = new System.Drawing.Point(4, 22);
+            this.callsTabPage.Name = "callsTabPage";
+            this.callsTabPage.Size = new System.Drawing.Size(362, 76);
+            this.callsTabPage.TabIndex = 4;
+            this.callsTabPage.Text = "Calls";
+            this.callsTabPage.UseVisualStyleBackColor = true;
+            // 
+            // apiCallsLogTextBox
+            // 
+            this.apiCallsLogTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.apiCallsLogTextBox.Location = new System.Drawing.Point(0, 0);
+            this.apiCallsLogTextBox.Multiline = true;
+            this.apiCallsLogTextBox.Name = "apiCallsLogTextBox";
+            this.apiCallsLogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.apiCallsLogTextBox.Size = new System.Drawing.Size(362, 76);
+            this.apiCallsLogTextBox.TabIndex = 4;
+            this.apiCallsLogTextBox.WordWrap = true;
             // 
             // errorlTabPage
             // 
-            this.errorlTabPage.Controls.Add(this.errorTextBox);
+            this.errorlTabPage.Controls.Add(this.errorLogTextBox);
             this.errorlTabPage.Location = new System.Drawing.Point(4, 22);
             this.errorlTabPage.Name = "errorlTabPage";
-            this.errorlTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.errorlTabPage.Size = new System.Drawing.Size(362, 76);
-            this.errorlTabPage.TabIndex = 1;
+            this.errorlTabPage.TabIndex = 5;
             this.errorlTabPage.Text = "Error";
             this.errorlTabPage.UseVisualStyleBackColor = true;
             // 
-            // errorTextBox
+            // errorLogTextBox
             // 
-            this.errorTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.errorTextBox.Location = new System.Drawing.Point(3, 3);
-            this.errorTextBox.Multiline = true;
-            this.errorTextBox.Name = "errorTextBox";
-            this.errorTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.errorTextBox.Size = new System.Drawing.Size(356, 70);
-            this.errorTextBox.TabIndex = 3;
-            this.errorTextBox.WordWrap = false;
+            this.errorLogTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.errorLogTextBox.Location = new System.Drawing.Point(0, 0);
+            this.errorLogTextBox.Multiline = true;
+            this.errorLogTextBox.Name = "errorLogTextBox";
+            this.errorLogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.errorLogTextBox.Size = new System.Drawing.Size(362, 76);
+            this.errorLogTextBox.TabIndex = 6;
+            this.errorLogTextBox.WordWrap = true;
             // 
             // tableLayoutPanel1
             // 
@@ -733,8 +781,12 @@ namespace IMDBfetch
             this.mainTableLayoutPanel.ResumeLayout(false);
             this.mainTableLayoutPanel.PerformLayout();
             this.logTabControl.ResumeLayout(false);
-            this.exceptionTabPage.ResumeLayout(false);
-            this.exceptionTabPage.PerformLayout();
+            this.searchTabPage.ResumeLayout(false);
+            this.searchTabPage.PerformLayout();
+            this.infoTabPage.ResumeLayout(false);
+            this.infoTabPage.PerformLayout();
+            this.callsTabPage.ResumeLayout(false);
+            this.callsTabPage.PerformLayout();
             this.errorlTabPage.ResumeLayout(false);
             this.errorlTabPage.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
@@ -748,6 +800,14 @@ namespace IMDBfetch
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+        private System.Windows.Forms.TextBox errorLogTextBox;
+        private System.Windows.Forms.TabPage errorlTabPage;
+        private System.Windows.Forms.TextBox apiCallsLogTextBox;
+        private System.Windows.Forms.TextBox infoLogTextBox;
+        private System.Windows.Forms.TextBox searchLogTextBox;
+        private System.Windows.Forms.TabPage callsTabPage;
+        private System.Windows.Forms.TabPage infoTabPage;
+        private System.Windows.Forms.TabPage searchTabPage;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem getAPIKeyToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel4;
@@ -794,10 +854,6 @@ namespace IMDBfetch
         private System.Windows.Forms.RadioButton descriptionRadioButton;
         private System.Windows.Forms.RadioButton rawRadioButton;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.TextBox errorTextBox;
-        private System.Windows.Forms.TabPage errorlTabPage;
-        private System.Windows.Forms.TextBox exceptionTextBox;
-        private System.Windows.Forms.TabPage exceptionTabPage;
         private System.Windows.Forms.TabControl logTabControl;
         private System.Windows.Forms.ListBox searchListBox;
         private System.Windows.Forms.TextBox searchTextBox;

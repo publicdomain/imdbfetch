@@ -18,7 +18,9 @@ namespace IMDBfetch
     using System.Windows.Forms;
     using System.Xml.Serialization;
     using IMDbApiLib;
+    using IMDbApiLib.Models;
     using Microsoft.VisualBasic;
+    using Newtonsoft.Json;
     using PublicDomain;
 
     /// <summary>
@@ -26,11 +28,6 @@ namespace IMDBfetch
     /// </summary>
     public partial class MainForm : Form
     {
-        /// <summary>
-        /// The image web client.
-        /// </summary>
-        private WebClient imageWebClient = new WebClient();
-
         /// <summary>
         /// The directory.
         /// </summary>
@@ -185,37 +182,6 @@ namespace IMDBfetch
 
             // Desc
             this.descCheckBox.Checked = this.settingsData.Desc;
-
-            /* WebClient */
-
-            this.imageWebClient.DownloadFileCompleted += new AsyncCompletedEventHandler(OnDownloadFileCompleted);
-            this.imageWebClient.Proxy = null;
-        }
-
-        /// <summary>
-        /// Handles the download file completed.
-        /// </summary>
-        /// <param name="sender">Sender object.</param>
-        /// <param name="e">Event arguments.</param>
-        private void OnDownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
-        {
-            // Try to load
-            if (File.Exists(this.imageFilePath))
-            {
-                // Load picture
-                this.imagePictureBox.Image = Image.FromFile(this.imageFilePath);
-
-                // Advise user
-                this.resultToolStripStatusLabel.Text = $"Info and image downloaded.";
-            }
-            else
-            {
-                // Advise user
-                this.resultToolStripStatusLabel.Text = $"Image download retry...";
-
-                // Download image (Retry)
-                this.imageWebClient.DownloadFileAsync(this.imageUri, this.imageFilePath);
-            }
         }
 
         /// <summary>
@@ -346,26 +312,34 @@ namespace IMDBfetch
             this.infoRichTextBox.Clear();
             this.imagePictureBox.Image = null;
             this.searchListBox.Items.Clear();
-            this.exceptionTextBox.Clear();
-            this.errorTextBox.Clear();
-
-            /* Search */
+            this.searchLogTextBox.Clear();
 
             // Advise user
             this.resultToolStripStatusLabel.Text = $"Searching for: \"{this.searchTextBox.Text}\"...";
 
             // Focus search tab page
-            this.logTabControl.SelectedTab = this.exceptionTabPage;
+            this.logTabControl.SelectedTab = this.searchTabPage;
 
             try
             {
-                var apiLib = new ApiLib($"{ this.settingsData.ApiKey }");
+                // Declare JSON
+                string json = string.Empty;
 
-                // Raise local api calls
-                this.localApiCalls++;
+                // Fetch
+                using (WebClient webClient = new WebClient())
+                {
+                    // Raise local api calls
+                    this.localApiCalls++;
 
-                // Search
-                var data = await apiLib.SearchAsync(this.searchTextBox.Text);
+                    // Set JSON
+                    json = await webClient.DownloadStringTaskAsync(new Uri($"https://imdb-api.com/API/Search/{this.settingsData.ApiKey}/{Uri.EscapeDataString(this.searchTextBox.Text)}"));
+                }
+
+                // Display log
+                this.searchLogTextBox.Text = json;
+
+                // Set data
+                SearchData data = JsonConvert.DeserializeObject<SearchData>(json);
 
                 // Check for error
                 if (data.ErrorMessage.Length > 0)
@@ -459,7 +433,7 @@ namespace IMDBfetch
                 DataRow[] dataRowArray = this.dataTable.Select($"ID = '{id}'");
 
                 // Update status
-                this.resultToolStripStatusLabel.Text = $"Downloading info: \"{title.Substring(0, Math.Min(title.Length, 25))}\"...";
+                this.resultToolStripStatusLabel.Text = $"Downloading info for: \"{title.Substring(0, Math.Min(title.Length, 25))}\"...";
 
                 /* Get wikiṕedia */
                 var apiLib = new ApiLib($"{ this.settingsData.ApiKey }");
@@ -483,11 +457,9 @@ namespace IMDBfetch
                 //  Set image uri
                 this.imageUri = new Uri(dataRowArray[0]["Image"].ToString());
 
-                // Set image file path
-                this.imageFilePath = Path.Combine(this.directory, this.GetValidFilePathName($"{title}{Path.GetExtension(dataRowArray[0]["Image"].ToString())}"));
+                string filePath = Path.Combine(this.directory, this.GetValidFilePathName($"{title}{Path.GetExtension(dataRowArray[0]["Image"].ToString())}"));
 
-                // Download image
-                this.imageWebClient.DownloadFileAsync(this.imageUri, this.imageFilePath);
+                //#webClient.DownloadFileAsync(this.imageUri, this.imageFilePath);
             }
             catch (Exception ex)
             {
@@ -495,7 +467,7 @@ namespace IMDBfetch
                 File.AppendAllText(this.errorLogPath, $"{Environment.NewLine}{Environment.NewLine}Info exception message:{Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.Message}");
 
                 // Advise user
-                this.resultToolStripStatusLabel.Text = $"Exception while fetching info. Please retry.";
+                this.resultToolStripStatusLabel.Text = $"Exception while fetching info + image. Please retry.";
             }
 
             // Update api calls count
@@ -705,10 +677,10 @@ namespace IMDBfetch
                 // Log to file
                 File.AppendAllText(this.errorLogPath, message);
 
-                // Advise user
+                /*// Advise user
                 this.exceptionTextBox.Text = message;
 
-                this.logTabControl.SelectedTab = this.exceptionTabPage;
+                this.logTabControl.SelectedTab = this.exceptionTabPage;*/
             }
         }
 
