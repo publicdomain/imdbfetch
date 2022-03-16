@@ -343,8 +343,8 @@ namespace IMDBfetch
             this.infoRichTextBox.Clear();
             this.imagePictureBox.Image = null;
             this.searchListBox.Items.Clear();
-            this.searchJsonTextBox.Clear();
-            this.infoJsonTextBox.Clear();
+            this.exceptionTextBox.Clear();
+            this.errorTextBox.Clear();
 
             /* Search */
 
@@ -352,7 +352,7 @@ namespace IMDBfetch
             this.resultToolStripStatusLabel.Text = $"Searching for: \"{this.searchTextBox.Text}\"...";
 
             // Focus search tab page
-            this.rawTabControl.SelectedTab = this.searchTabPage;
+            this.logTabControl.SelectedTab = this.exceptionTabPage;
 
             try
             {
@@ -592,7 +592,22 @@ namespace IMDBfetch
         /// <param name="e">Event arguments.</param>
         private void OnOptionsToolStripMenuItemDropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            // TODO Add code
+            // Set tool strip menu item
+            ToolStripMenuItem toolStripMenuItem = (ToolStripMenuItem)e.ClickedItem;
+
+            // Toggle checked
+            toolStripMenuItem.Checked = !toolStripMenuItem.Checked;
+
+            // Set topmost by check box
+            this.TopMost = this.alwaysOnTopToolStripMenuItem.Checked;
+
+            /* Settings data */
+
+            // Set API calls on start
+            if (toolStripMenuItem.Name == "setAPICalsOnStartToolStripMenuItem")
+            {
+                this.settingsData.ApiCallsOnStart = this.setAPICalsOnStartToolStripMenuItem.Checked;
+            }
         }
 
         /// <summary>
@@ -833,6 +848,26 @@ namespace IMDBfetch
                 // Advise user
                 MessageBox.Show($"Error saving settings file.{Environment.NewLine}{Environment.NewLine}Message:{Environment.NewLine}{exception.Message}", "File error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        /// <summary>
+        /// Ons the get APIC alls tool strip menu item click.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnGetAPICallsToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            // TODO Add code
+        }
+
+        /// <summary>
+        /// Ons the get APIK ei tool strip menu item click.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnGetAPIKeiToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            // TODO Add code
         }
 
         /// <summary>

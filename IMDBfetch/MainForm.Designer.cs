@@ -37,18 +37,16 @@ namespace IMDBfetch
             this.fetchButton = new System.Windows.Forms.Button();
             this.browseButton = new System.Windows.Forms.Button();
             this.directoryLabel = new System.Windows.Forms.Label();
-            this.JsonLabel = new System.Windows.Forms.Label();
+            this.logLabel = new System.Windows.Forms.Label();
             this.directoryTextBox = new System.Windows.Forms.TextBox();
             this.gamesLabel = new System.Windows.Forms.Label();
             this.searchTextBox = new System.Windows.Forms.TextBox();
             this.searchListBox = new System.Windows.Forms.ListBox();
-            this.rawTabControl = new System.Windows.Forms.TabControl();
-            this.searchTabPage = new System.Windows.Forms.TabPage();
-            this.searchJsonTextBox = new System.Windows.Forms.TextBox();
-            this.infolTabPage = new System.Windows.Forms.TabPage();
-            this.infoJsonTextBox = new System.Windows.Forms.TextBox();
-            this.errorTabPage = new System.Windows.Forms.TabPage();
-            this.erroJsonlTextBox = new System.Windows.Forms.TextBox();
+            this.logTabControl = new System.Windows.Forms.TabControl();
+            this.exceptionTabPage = new System.Windows.Forms.TabPage();
+            this.exceptionTextBox = new System.Windows.Forms.TextBox();
+            this.errorlTabPage = new System.Windows.Forms.TabPage();
+            this.errorTextBox = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.rawRadioButton = new System.Windows.Forms.RadioButton();
             this.descriptionRadioButton = new System.Windows.Forms.RadioButton();
@@ -83,6 +81,8 @@ namespace IMDBfetch
             this.originalThreadDonationCodercomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sourceCodeGithubcomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.getAPIKeiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainStatusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -94,10 +94,9 @@ namespace IMDBfetch
             this.resultToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.mainTableLayoutPanel.SuspendLayout();
-            this.rawTabControl.SuspendLayout();
-            this.searchTabPage.SuspendLayout();
-            this.infolTabPage.SuspendLayout();
-            this.errorTabPage.SuspendLayout();
+            this.logTabControl.SuspendLayout();
+            this.exceptionTabPage.SuspendLayout();
+            this.errorlTabPage.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imagePictureBox)).BeginInit();
@@ -118,12 +117,12 @@ namespace IMDBfetch
             this.mainTableLayoutPanel.Controls.Add(this.fetchButton, 0, 4);
             this.mainTableLayoutPanel.Controls.Add(this.browseButton, 1, 3);
             this.mainTableLayoutPanel.Controls.Add(this.directoryLabel, 0, 2);
-            this.mainTableLayoutPanel.Controls.Add(this.JsonLabel, 0, 7);
+            this.mainTableLayoutPanel.Controls.Add(this.logLabel, 0, 7);
             this.mainTableLayoutPanel.Controls.Add(this.directoryTextBox, 0, 3);
             this.mainTableLayoutPanel.Controls.Add(this.gamesLabel, 0, 0);
             this.mainTableLayoutPanel.Controls.Add(this.searchTextBox, 0, 1);
             this.mainTableLayoutPanel.Controls.Add(this.searchListBox, 0, 5);
-            this.mainTableLayoutPanel.Controls.Add(this.rawTabControl, 0, 8);
+            this.mainTableLayoutPanel.Controls.Add(this.logTabControl, 0, 8);
             this.mainTableLayoutPanel.Controls.Add(this.tableLayoutPanel1, 0, 6);
             this.mainTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainTableLayoutPanel.Location = new System.Drawing.Point(3, 3);
@@ -178,17 +177,17 @@ namespace IMDBfetch
             this.directoryLabel.Text = "&Directory:";
             this.directoryLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // JsonLabel
+            // logLabel
             // 
-            this.mainTableLayoutPanel.SetColumnSpan(this.JsonLabel, 2);
-            this.JsonLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.JsonLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
-            this.JsonLabel.Location = new System.Drawing.Point(3, 336);
-            this.JsonLabel.Name = "JsonLabel";
-            this.JsonLabel.Size = new System.Drawing.Size(370, 20);
-            this.JsonLabel.TabIndex = 7;
-            this.JsonLabel.Text = "&JSON:";
-            this.JsonLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.mainTableLayoutPanel.SetColumnSpan(this.logLabel, 2);
+            this.logLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
+            this.logLabel.Location = new System.Drawing.Point(3, 336);
+            this.logLabel.Name = "logLabel";
+            this.logLabel.Size = new System.Drawing.Size(370, 20);
+            this.logLabel.TabIndex = 7;
+            this.logLabel.Text = "&Log:";
+            this.logLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // directoryTextBox
             // 
@@ -234,83 +233,61 @@ namespace IMDBfetch
             this.searchListBox.TabIndex = 6;
             this.searchListBox.SelectedIndexChanged += new System.EventHandler(this.OnSearchListBoxSelectedIndexChanged);
             // 
-            // rawTabControl
+            // logTabControl
             // 
-            this.mainTableLayoutPanel.SetColumnSpan(this.rawTabControl, 2);
-            this.rawTabControl.Controls.Add(this.searchTabPage);
-            this.rawTabControl.Controls.Add(this.infolTabPage);
-            this.rawTabControl.Controls.Add(this.errorTabPage);
-            this.rawTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rawTabControl.Location = new System.Drawing.Point(3, 359);
-            this.rawTabControl.Name = "rawTabControl";
-            this.rawTabControl.SelectedIndex = 0;
-            this.rawTabControl.Size = new System.Drawing.Size(370, 102);
-            this.rawTabControl.TabIndex = 8;
+            this.mainTableLayoutPanel.SetColumnSpan(this.logTabControl, 2);
+            this.logTabControl.Controls.Add(this.exceptionTabPage);
+            this.logTabControl.Controls.Add(this.errorlTabPage);
+            this.logTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logTabControl.Location = new System.Drawing.Point(3, 359);
+            this.logTabControl.Name = "logTabControl";
+            this.logTabControl.SelectedIndex = 0;
+            this.logTabControl.Size = new System.Drawing.Size(370, 102);
+            this.logTabControl.TabIndex = 8;
             // 
-            // searchTabPage
+            // exceptionTabPage
             // 
-            this.searchTabPage.Controls.Add(this.searchJsonTextBox);
-            this.searchTabPage.Location = new System.Drawing.Point(4, 22);
-            this.searchTabPage.Name = "searchTabPage";
-            this.searchTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.searchTabPage.Size = new System.Drawing.Size(362, 76);
-            this.searchTabPage.TabIndex = 0;
-            this.searchTabPage.Text = "Search";
-            this.searchTabPage.UseVisualStyleBackColor = true;
+            this.exceptionTabPage.Controls.Add(this.exceptionTextBox);
+            this.exceptionTabPage.Location = new System.Drawing.Point(4, 22);
+            this.exceptionTabPage.Name = "exceptionTabPage";
+            this.exceptionTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.exceptionTabPage.Size = new System.Drawing.Size(362, 76);
+            this.exceptionTabPage.TabIndex = 0;
+            this.exceptionTabPage.Text = "Exception";
+            this.exceptionTabPage.UseVisualStyleBackColor = true;
             // 
-            // searchJsonTextBox
+            // exceptionTextBox
             // 
-            this.searchJsonTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.searchJsonTextBox.Location = new System.Drawing.Point(3, 3);
-            this.searchJsonTextBox.Multiline = true;
-            this.searchJsonTextBox.Name = "searchJsonTextBox";
-            this.searchJsonTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.searchJsonTextBox.Size = new System.Drawing.Size(356, 70);
-            this.searchJsonTextBox.TabIndex = 0;
-            this.searchJsonTextBox.WordWrap = false;
+            this.exceptionTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.exceptionTextBox.Location = new System.Drawing.Point(3, 3);
+            this.exceptionTextBox.Multiline = true;
+            this.exceptionTextBox.Name = "exceptionTextBox";
+            this.exceptionTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.exceptionTextBox.Size = new System.Drawing.Size(356, 70);
+            this.exceptionTextBox.TabIndex = 0;
+            this.exceptionTextBox.WordWrap = false;
             // 
-            // infolTabPage
+            // errorlTabPage
             // 
-            this.infolTabPage.Controls.Add(this.infoJsonTextBox);
-            this.infolTabPage.Location = new System.Drawing.Point(4, 22);
-            this.infolTabPage.Name = "infolTabPage";
-            this.infolTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.infolTabPage.Size = new System.Drawing.Size(362, 76);
-            this.infolTabPage.TabIndex = 1;
-            this.infolTabPage.Text = "Info";
-            this.infolTabPage.UseVisualStyleBackColor = true;
+            this.errorlTabPage.Controls.Add(this.errorTextBox);
+            this.errorlTabPage.Location = new System.Drawing.Point(4, 22);
+            this.errorlTabPage.Name = "errorlTabPage";
+            this.errorlTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.errorlTabPage.Size = new System.Drawing.Size(362, 76);
+            this.errorlTabPage.TabIndex = 1;
+            this.errorlTabPage.Text = "Error";
+            this.errorlTabPage.UseVisualStyleBackColor = true;
             // 
-            // infoJsonTextBox
+            // errorTextBox
             // 
-            this.infoJsonTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.infoJsonTextBox.Location = new System.Drawing.Point(3, 3);
-            this.infoJsonTextBox.Multiline = true;
-            this.infoJsonTextBox.Name = "infoJsonTextBox";
-            this.infoJsonTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.infoJsonTextBox.Size = new System.Drawing.Size(356, 70);
-            this.infoJsonTextBox.TabIndex = 3;
-            this.infoJsonTextBox.WordWrap = false;
-            // 
-            // errorTabPage
-            // 
-            this.errorTabPage.Controls.Add(this.erroJsonlTextBox);
-            this.errorTabPage.Location = new System.Drawing.Point(4, 22);
-            this.errorTabPage.Name = "errorTabPage";
-            this.errorTabPage.Size = new System.Drawing.Size(362, 76);
-            this.errorTabPage.TabIndex = 2;
-            this.errorTabPage.Text = "Error";
-            this.errorTabPage.UseVisualStyleBackColor = true;
-            // 
-            // erroJsonlTextBox
-            // 
-            this.erroJsonlTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.erroJsonlTextBox.Location = new System.Drawing.Point(0, 0);
-            this.erroJsonlTextBox.Multiline = true;
-            this.erroJsonlTextBox.Name = "erroJsonlTextBox";
-            this.erroJsonlTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.erroJsonlTextBox.Size = new System.Drawing.Size(362, 76);
-            this.erroJsonlTextBox.TabIndex = 0;
-            this.erroJsonlTextBox.WordWrap = false;
+            this.errorTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.errorTextBox.Location = new System.Drawing.Point(3, 3);
+            this.errorTextBox.Multiline = true;
+            this.errorTextBox.Name = "errorTextBox";
+            this.errorTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.errorTextBox.Size = new System.Drawing.Size(356, 70);
+            this.errorTextBox.TabIndex = 3;
+            this.errorTextBox.WordWrap = false;
             // 
             // tableLayoutPanel1
             // 
@@ -572,6 +549,7 @@ namespace IMDBfetch
             this.getAPICallsToolStripMenuItem.Name = "getAPICallsToolStripMenuItem";
             this.getAPICallsToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.getAPICallsToolStripMenuItem.Text = "&Get API calls";
+            this.getAPICallsToolStripMenuItem.Click += new System.EventHandler(this.OnGetAPICallsToolStripMenuItemClick);
             // 
             // settingsToolStripMenuItem
             // 
@@ -617,6 +595,8 @@ namespace IMDBfetch
                                     this.originalThreadDonationCodercomToolStripMenuItem,
                                     this.sourceCodeGithubcomToolStripMenuItem,
                                     this.toolStripSeparator2,
+                                    this.getAPIKeiToolStripMenuItem,
+                                    this.toolStripSeparator1,
                                     this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
@@ -649,6 +629,18 @@ namespace IMDBfetch
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(275, 6);
+            // 
+            // getAPIKeiToolStripMenuItem
+            // 
+            this.getAPIKeiToolStripMenuItem.Name = "getAPIKeiToolStripMenuItem";
+            this.getAPIKeiToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
+            this.getAPIKeiToolStripMenuItem.Text = "&Get API kei";
+            this.getAPIKeiToolStripMenuItem.Click += new System.EventHandler(this.OnGetAPIKeiToolStripMenuItemClick);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(275, 6);
             // 
             // aboutToolStripMenuItem
             // 
@@ -740,13 +732,11 @@ namespace IMDBfetch
             this.Load += new System.EventHandler(this.OnMainFormLoad);
             this.mainTableLayoutPanel.ResumeLayout(false);
             this.mainTableLayoutPanel.PerformLayout();
-            this.rawTabControl.ResumeLayout(false);
-            this.searchTabPage.ResumeLayout(false);
-            this.searchTabPage.PerformLayout();
-            this.infolTabPage.ResumeLayout(false);
-            this.infolTabPage.PerformLayout();
-            this.errorTabPage.ResumeLayout(false);
-            this.errorTabPage.PerformLayout();
+            this.logTabControl.ResumeLayout(false);
+            this.exceptionTabPage.ResumeLayout(false);
+            this.exceptionTabPage.PerformLayout();
+            this.errorlTabPage.ResumeLayout(false);
+            this.errorlTabPage.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.imagePictureBox)).EndInit();
@@ -758,14 +748,14 @@ namespace IMDBfetch
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem getAPIKeiToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel4;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private System.Windows.Forms.ToolStripMenuItem setAPICalsOnStartToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem getAPICallsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aPIKeyToolStripMenuItem;
-        private System.Windows.Forms.TextBox erroJsonlTextBox;
-        private System.Windows.Forms.TabPage errorTabPage;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.ToolStripStatusLabel resultToolStripStatusLabel;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
@@ -804,16 +794,16 @@ namespace IMDBfetch
         private System.Windows.Forms.RadioButton descriptionRadioButton;
         private System.Windows.Forms.RadioButton rawRadioButton;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.TextBox infoJsonTextBox;
-        private System.Windows.Forms.TabPage infolTabPage;
-        private System.Windows.Forms.TextBox searchJsonTextBox;
-        private System.Windows.Forms.TabPage searchTabPage;
-        private System.Windows.Forms.TabControl rawTabControl;
+        private System.Windows.Forms.TextBox errorTextBox;
+        private System.Windows.Forms.TabPage errorlTabPage;
+        private System.Windows.Forms.TextBox exceptionTextBox;
+        private System.Windows.Forms.TabPage exceptionTabPage;
+        private System.Windows.Forms.TabControl logTabControl;
         private System.Windows.Forms.ListBox searchListBox;
         private System.Windows.Forms.TextBox searchTextBox;
         private System.Windows.Forms.Label gamesLabel;
         private System.Windows.Forms.TextBox directoryTextBox;
-        private System.Windows.Forms.Label JsonLabel;
+        private System.Windows.Forms.Label logLabel;
         private System.Windows.Forms.Label directoryLabel;
         private System.Windows.Forms.Button browseButton;
         private System.Windows.Forms.Button fetchButton;
