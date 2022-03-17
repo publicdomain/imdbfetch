@@ -65,14 +65,9 @@ namespace IMDBfetch
         private string errorLogPath = "IMDBfetch-log.txt";
 
         /// <summary>
-        /// The image URI.
+        /// The image file path.
         /// </summary>
-        private Uri imageUri = null;
-
-        /// <summary>
-        /// The file path.
-        /// </summary>
-        private string imageFilePath = string.Empty;
+        private string imageFilePath = String.Empty;
 
         /// <summary>
         /// The server API calls.
@@ -328,6 +323,9 @@ namespace IMDBfetch
                 // Fetch
                 using (WebClient webClient = new WebClient())
                 {
+                    // No proxy
+                    webClient.Proxy = null;
+
                     // Raise local api calls
                     this.localApiCalls++;
 
@@ -416,12 +414,17 @@ namespace IMDBfetch
             // Disable
             this.searchListBox.Enabled = false;
 
+            // Reset
+            this.imagePictureBox.Image = null;
+            this.infoLogTextBox.Clear();
+            this.infoRichTextBox.Clear();
+
+            // Focus info tab page
+            this.logTabControl.SelectedTab = this.infoTabPage;
+
             try
 
             {
-                // Disable
-                this.searchListBox.Enabled = false;
-
                 // Split list item
                 var item = searchListBoxSelectedItem.Split(new char[] { ' ' }, 2);
 
@@ -436,35 +439,79 @@ namespace IMDBfetch
                 this.resultToolStripStatusLabel.Text = $"Downloading info for: \"{title.Substring(0, Math.Min(title.Length, 25))}\"...";
 
                 /* Get wikiṕedia */
-                var apiLib = new ApiLib($"{ this.settingsData.ApiKey }");
 
-                // Raise local api calls
-                this.localApiCalls++;
+                // Declare JSON
+                string json = string.Empty;
 
-                // Search
-                var data = await apiLib.WikipediaAsync(id, IMDbApiLib.Models.Language.en);
+                // Fetch
+                using (WebClient webClient = new WebClient())
+                {
+                    // No proxy
+                    webClient.Proxy = null;
+
+                    // Raise local api calls
+                    this.localApiCalls++;
+
+                    // Set JSON
+                    json = await webClient.DownloadStringTaskAsync(new Uri($"https://imdb-api.com/API/Wikipedia/{this.settingsData.ApiKey}/{id}"));
+                }
+
+                // Display log
+                this.infoLogTextBox.Text = json;
+
+                // Set data
+                WikipediaData data = JsonConvert.DeserializeObject<WikipediaData>(json);
 
                 // Check for error
                 if (data.ErrorMessage.Length > 0)
                 {
                     // Halt flow
-                    throw new Exception($"Error when download info for \"{title.Substring(0, Math.Min(title.Length, 25))}\": {data.ErrorMessage}");
+                    throw new Exception($"Error when downloading info for \"{title.Substring(0, Math.Min(title.Length, 25))}\": {data.ErrorMessage}");
                 }
 
                 // Set into rich text box
                 this.infoRichTextBox.Text = $"Name: {data.Title}{Environment.NewLine}Year: {data.Year}{Environment.NewLine}{Environment.NewLine}{data.PlotFull.PlainText}";
 
+                /* Image */
+
+                // Update status
+                this.resultToolStripStatusLabel.Text = $"Downloading image for: \"{title.Substring(0, Math.Min(title.Length, 25))}\"...";
+
                 //  Set image uri
-                this.imageUri = new Uri(dataRowArray[0]["Image"].ToString());
+                var imageUri = new Uri(dataRowArray[0]["Image"].ToString());
 
-                string filePath = Path.Combine(this.directory, this.GetValidFilePathName($"{title}{Path.GetExtension(dataRowArray[0]["Image"].ToString())}"));
+                // Set image file path
+                this.imageFilePath = Path.Combine(this.directory, this.GetValidFilePathName($"{title}{Path.GetExtension(dataRowArray[0]["Image"].ToString())}"));
 
-                //#webClient.DownloadFileAsync(this.imageUri, this.imageFilePath);
+                // Fetch image
+                using (WebClient webClient = new WebClient())
+                {
+                    // No proxy
+                    webClient.Proxy = null;
+
+                    // Download image to file
+                    await webClient.DownloadFileTaskAsync(imageUri, this.imageFilePath);
+                }
+
+                // Try to load
+                if (File.Exists(this.imageFilePath))
+                {
+                    // Load picture
+                    this.imagePictureBox.Image = Image.FromFile(this.imageFilePath);
+
+                    // Advise user
+                    this.resultToolStripStatusLabel.Text = $"Info and image downloaded.";
+                }
+                else
+                {
+                    // Throw an exception
+                    throw new Exception($"Error when downloading image for: \"{title.Substring(0, Math.Min(title.Length, 25))}\"...");
+                }
             }
             catch (Exception ex)
             {
                 // Log to file
-                File.AppendAllText(this.errorLogPath, $"{Environment.NewLine}{Environment.NewLine}Info exception message:{Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.Message}");
+                File.AppendAllText(this.errorLogPath, $"{Environment.NewLine}{Environment.NewLine}Info + image exception message:{Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.Message}");
 
                 // Advise user
                 this.resultToolStripStatusLabel.Text = $"Exception while fetching info + image. Please retry.";
