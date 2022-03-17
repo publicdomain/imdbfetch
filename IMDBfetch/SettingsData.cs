@@ -24,6 +24,12 @@ namespace PublicDomain
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="T:PublicDomain.SettingsData"/> always on top.
+        /// </summary>
+        /// <value><c>true</c> if always on top; otherwise, <c>false</c>.</value>
+        public bool AlwaysOnTop { get; set; } = false;
+
+        /// <summary>
         /// Gets or sets the directory.
         /// </summary>
         /// <value>The directory.</value>

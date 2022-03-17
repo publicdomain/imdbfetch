@@ -96,9 +96,9 @@ namespace IMDBfetch
             this.freeReleasesPublicDomainIsToolStripMenuItem.Image = this.associatedIcon.ToBitmap();
 
             // SSL fix
-            //System.Net.ServicePointManager.Expect100Continue = true;
-            //System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
-            System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; }; // DEBUG, Linux
+            System.Net.ServicePointManager.Expect100Continue = true;
+            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
+            //System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; }; // DEBUG, Linux
 
             /* Data table */
 
@@ -625,11 +625,11 @@ namespace IMDBfetch
 
             /* Settings data */
 
+            // ALways on top
+            this.settingsData.AlwaysOnTop = this.alwaysOnTopToolStripMenuItem.Checked;
+
             // Set API calls on start
-            if (toolStripMenuItem.Name == "setAPICalsOnStartToolStripMenuItem")
-            {
-                this.settingsData.ApiCallsOnStart = this.setAPICalsOnStartToolStripMenuItem.Checked;
-            }
+            this.settingsData.ApiCallsOnStart = this.setAPICalsOnStartToolStripMenuItem.Checked;
         }
 
         /// <summary>
@@ -696,7 +696,7 @@ namespace IMDBfetch
         {
             try
             {
-                /* Get usage  */
+                /* Get usage */
 
                 // Clear
                 this.apiCallsLogTextBox.Clear();
@@ -901,8 +901,21 @@ namespace IMDBfetch
         /// <param name="e">Event arguments.</param>
         private void OnMainFormLoad(object sender, EventArgs e)
         {
+            // Set topmost
+            this.TopMost = this.settingsData.AlwaysOnTop;
+
             // Focus search text box
             this.searchTextBox.Focus();
+
+            // Get API calls
+            if (this.settingsData.ApiCallsOnStart)
+            {
+                this.getAPICallsToolStripMenuItem.PerformClick();
+            }
+
+            // GUI
+            this.alwaysOnTopToolStripMenuItem.Checked = this.settingsData.AlwaysOnTop;
+            this.setAPICalsOnStartToolStripMenuItem.Checked = this.settingsData.ApiCallsOnStart;
         }
 
         /// <summary>
