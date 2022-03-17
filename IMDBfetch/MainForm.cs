@@ -641,14 +641,13 @@ namespace IMDBfetch
         {
             this.searchTextBox.Clear();
 
-            this.directoryTextBox.Clear();
-
             this.searchListBox.Items.Clear();
 
             this.fetchedCount = 0;
             this.fetchedCountToolStripStatusLabel.Text = "0";
 
             this.infoRichTextBox.Clear();
+
             this.imagePictureBox.Image = null;
 
             this.searchTextBox.Focus();
@@ -697,24 +696,55 @@ namespace IMDBfetch
         {
             try
             {
-                /* Get wikiṕedia */
-                var apiLib = new ApiLib($"{ this.settingsData.ApiKey }");
+                /* Get usage  */
 
-                // Search
-                var data = await apiLib.UsageAsync();
+                // Clear
+                this.apiCallsLogTextBox.Clear();
 
-                // Check for error
+                // Focus info tab page
+                this.logTabControl.SelectedTab = this.callsTabPage;
+
+                // Advise user
+                this.resultToolStripStatusLabel.Text = $"Getting today's API usage.";
+
+                // Declare JSON
+                string json = string.Empty;
+
+                // Fetch
+                using (WebClient webClient = new WebClient())
+                {
+                    // No proxy
+                    webClient.Proxy = null;
+
+                    // Reset local api calls
+                    this.localApiCalls = 0;
+
+                    // Set JSON
+                    json = await webClient.DownloadStringTaskAsync(new Uri($"https://imdb-api.com/API/Usage/{this.settingsData.ApiKey}"));
+                }
+
+                // Display log
+                this.apiCallsLogTextBox.Text = json;
+
+                // Set data
+                UsageData data = JsonConvert.DeserializeObject<UsageData>(json);
+
+
+                /*// TODO Check for error
                 if (data.ErrorMessage.Length > 0)
                 {
                     // Halt flow
                     throw new Exception($"Error when getting API calls count: {data.ErrorMessage}");
-                }
+                }*/
 
                 // Set server count
                 this.serverApiCalls = data.Count;
 
                 // Update API calls
                 this.UpdateAPiCalls();
+
+                // Advise user
+                this.resultToolStripStatusLabel.Text = $"API usage count updated.";
             }
             catch (Exception ex)
             {
@@ -724,10 +754,8 @@ namespace IMDBfetch
                 // Log to file
                 File.AppendAllText(this.errorLogPath, message);
 
-                /*// Advise user
-                this.exceptionTextBox.Text = message;
-
-                this.logTabControl.SelectedTab = this.exceptionTabPage;*/
+                // Advise user
+                this.resultToolStripStatusLabel.Text = $"Get APi calls exception. Please retry.";
             }
         }
 
