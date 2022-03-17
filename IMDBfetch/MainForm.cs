@@ -98,7 +98,7 @@ namespace IMDBfetch
             // SSL fix
             System.Net.ServicePointManager.Expect100Continue = true;
             System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
-            //System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; }; // DEBUG, Linux
+            System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; }; // DEBUG, Linux
 
             /* Data table */
 
@@ -308,6 +308,7 @@ namespace IMDBfetch
             this.imagePictureBox.Image = null;
             this.searchListBox.Items.Clear();
             this.searchLogTextBox.Clear();
+            this.linksRichTextBox.Clear();
 
             // Advise user
             this.resultToolStripStatusLabel.Text = $"Searching for: \"{this.searchTextBox.Text}\"...";
@@ -418,6 +419,7 @@ namespace IMDBfetch
             this.imagePictureBox.Image = null;
             this.infoLogTextBox.Clear();
             this.infoRichTextBox.Clear();
+            this.linksRichTextBox.Clear();
 
             // Focus info tab page
             this.logTabControl.SelectedTab = this.infoTabPage;
@@ -469,8 +471,11 @@ namespace IMDBfetch
                     throw new Exception($"Error when downloading info for \"{title.Substring(0, Math.Min(title.Length, 25))}\": {data.ErrorMessage}");
                 }
 
-                // Set into rich text box
+                // Set info rich text box
                 this.infoRichTextBox.Text = $"Name: {data.Title}{Environment.NewLine}Year: {data.Year}{Environment.NewLine}{Environment.NewLine}{data.PlotFull.PlainText}";
+
+                // Set links rich text box
+                this.linksRichTextBox.Text = $"IMDB:{Environment.NewLine}http://www.imdb.com/title/{id}/{Environment.NewLine}{Environment.NewLine}Wikipedia:{Environment.NewLine}{data.Url}";
 
                 /* Image */
 
