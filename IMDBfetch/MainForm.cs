@@ -254,7 +254,7 @@ namespace IMDBfetch
             for (int i = 0; i < sortedDataTable.Rows.Count; i++)
             {
                 // Add item
-                this.searchListBox.Items.Add($"{sortedDataTable.Rows[i]["ID"]} {sortedDataTable.Rows[i]["Title"]} {sortedDataTable.Rows[i]["Description"]}");
+                this.searchListBox.Items.Add($"{(this.settingsData.HideIdsInList ? string.Empty : $"{ sortedDataTable.Rows[i]["ID"]} ")}{sortedDataTable.Rows[i]["Title"]} {sortedDataTable.Rows[i]["Description"]}");
             }
 
             // Resume drawing
@@ -919,6 +919,7 @@ namespace IMDBfetch
             // GUI
             this.alwaysOnTopToolStripMenuItem.Checked = this.settingsData.AlwaysOnTop;
             this.setAPICalsOnStartToolStripMenuItem.Checked = this.settingsData.ApiCallsOnStart;
+            this.hideIDsInListToolStripMenuItem.Checked = this.settingsData.HideIdsInList;
         }
 
         /// <summary>
