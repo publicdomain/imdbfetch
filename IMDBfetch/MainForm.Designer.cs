@@ -49,7 +49,7 @@ namespace IMDBfetch
             this.infoLogTextBox = new System.Windows.Forms.TextBox();
             this.callsTabPage = new System.Windows.Forms.TabPage();
             this.apiCallsLogTextBox = new System.Windows.Forms.TextBox();
-            this.errorLogogTabPage = new System.Windows.Forms.TabPage();
+            this.errorlogTabPage = new System.Windows.Forms.TabPage();
             this.errorLogTextBox = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.rawRadioButton = new System.Windows.Forms.RadioButton();
@@ -104,7 +104,7 @@ namespace IMDBfetch
             this.searchTabPage.SuspendLayout();
             this.infoTabPage.SuspendLayout();
             this.callsTabPage.SuspendLayout();
-            this.errLogrlogTabPage.SuspendLayout();
+            this.errorlogTabPage.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imagePictureBox)).BeginInit();
@@ -248,7 +248,7 @@ namespace IMDBfetch
             this.logTabControl.Controls.Add(this.searchTabPage);
             this.logTabControl.Controls.Add(this.infoTabPage);
             this.logTabControl.Controls.Add(this.callsTabPage);
-            this.logTabControl.Controls.Add(this.eLogrorlogTabPage);
+            this.logTabControl.Controls.Add(this.errorlogTabPage);
             this.logTabControl.Controls.Add(this.linksTabPage);
             this.logTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.logTabControl.Location = new System.Drawing.Point(3, 359);

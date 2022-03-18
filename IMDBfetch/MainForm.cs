@@ -379,11 +379,8 @@ namespace IMDBfetch
             }
             catch (Exception ex)
             {
-                // Log to file
-                File.AppendAllText(this.errorLogPath, $"{Environment.NewLine}{Environment.NewLine}Search exception message:{Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.StackTrace}");
-
-                // Advise user
-                this.resultToolStripStatusLabel.Text = $"Exception while searching. Please retry.";
+                // Log error
+                this.LogError($"Search exception message:{Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.StackTrace}", "Exception while searching. Please retry.");
             }
 
             // Update api calls count
@@ -515,11 +512,8 @@ namespace IMDBfetch
             }
             catch (Exception ex)
             {
-                // Log to file
-                File.AppendAllText(this.errorLogPath, $"{Environment.NewLine}{Environment.NewLine}Info + image exception message:{Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.Message}");
-
-                // Advise user
-                this.resultToolStripStatusLabel.Text = $"Exception while fetching info + image. Please retry.";
+                // Log
+                this.LogError($"Info + image exception message:{Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.Message}", $"Exception while fetching info + image. Please retry.");
             }
 
             // Update api calls count
@@ -753,14 +747,8 @@ namespace IMDBfetch
             }
             catch (Exception ex)
             {
-                // Set message
-                var message = $"{Environment.NewLine}{Environment.NewLine}Get APi calls exception message:{Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.Message}";
-
-                // Log to file
-                File.AppendAllText(this.errorLogPath, message);
-
-                // Advise user
-                this.resultToolStripStatusLabel.Text = $"Get APi calls exception. Please retry.";
+                // Log
+                this.LogError($"Get APi calls exception message:{Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.StackTrace}", "Get APi calls exception. Please retry.");
             }
         }
 
@@ -1001,7 +989,7 @@ namespace IMDBfetch
                 this.errorLogTextBox.Text = errorMessage;
 
                 // Log to file
-                File.AppendAllText(this.errorLogPath, $"{Environment.NewLine}{Environment.NewLine}errorMessage");
+                File.AppendAllText(this.errorLogPath, $"{Environment.NewLine}{Environment.NewLine}{DateTime.Now}{Environment.NewLine}{errorMessage}");
 
                 // Advise user
                 this.resultToolStripStatusLabel.Text = statusMessage;
