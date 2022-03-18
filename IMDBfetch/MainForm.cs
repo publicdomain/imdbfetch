@@ -412,7 +412,7 @@ namespace IMDBfetch
             // Disable
             this.searchListBox.Enabled = false;
 
-            // Reset
+            // Resets
             this.imagePictureBox.Image = null;
             this.infoLogTextBox.Clear();
             this.infoRichTextBox.Clear();
@@ -626,6 +626,16 @@ namespace IMDBfetch
 
             // ALways on top
             this.settingsData.AlwaysOnTop = this.alwaysOnTopToolStripMenuItem.Checked;
+
+            // Hide IDs in list
+            this.settingsData.HideIdsInList = this.hideIDsInListToolStripMenuItem.Checked;
+
+            // Check if it's a Hide IDs toggle
+            if (toolStripMenuItem.Name == this.hideIDsInListToolStripMenuItem.Name)
+            {
+                // Update list box
+                this.SortedDataTableToListBox();
+            }
 
             // Set API calls on start
             this.settingsData.ApiCallsOnStart = this.setAPICalsOnStartToolStripMenuItem.Checked;

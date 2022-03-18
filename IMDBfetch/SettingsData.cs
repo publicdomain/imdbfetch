@@ -70,5 +70,11 @@ namespace PublicDomain
         /// </summary>
         /// <value><c>true</c> if API calls on start; otherwise, <c>false</c>.</value>
         public bool ApiCallsOnStart { get; set; } = false;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="T:PublicDomain.SettingsData"/> hide identifiers in list.
+        /// </summary>
+        /// <value><c>true</c> if hide identifiers in list; otherwise, <c>false</c>.</value>
+        public bool HideIdsInList { get; set; } = true;
     }
 }
