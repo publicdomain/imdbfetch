@@ -475,7 +475,7 @@ namespace IMDBfetch
                 this.infoRichTextBox.Text = $"Name: {data.Title}{Environment.NewLine}Year: {data.Year}{Environment.NewLine}{Environment.NewLine}{data.PlotFull.PlainText}";
 
                 // Set links rich text box
-                this.linksRichTextBox.Text = $"IMDB:{Environment.NewLine}http://www.imdb.com/title/{id}/{Environment.NewLine}{Environment.NewLine}Wikipedia:{Environment.NewLine}{data.Url}";
+                this.linksRichTextBox.Text = $"IMDB:{Environment.NewLine}https://www.imdb.com/title/{id}/{Environment.NewLine}{Environment.NewLine}Wikipedia:{Environment.NewLine}{data.Url}";
 
                 /* Image */
 
@@ -982,6 +982,34 @@ namespace IMDBfetch
             {
                 // Advise user
                 MessageBox.Show($"Error saving settings file.{Environment.NewLine}{Environment.NewLine}Message:{Environment.NewLine}{exception.Message}", "File error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Logs the error.
+        /// </summary>
+        /// <param name="errorMessage">Error message.</param>
+        /// <param name="statusMessage">Status message.</param>
+        private void LogError(string errorMessage, string statusMessage)
+        {
+            try
+            {
+                // Focus error tab page
+                this.logTabControl.SelectedTab = this.errorlogTabPage;
+
+                // Set in text box 
+                this.errorLogTextBox.Text = errorMessage;
+
+                // Log to file
+                File.AppendAllText(this.errorLogPath, $"{Environment.NewLine}{Environment.NewLine}errorMessage");
+
+                // Advise user
+                this.resultToolStripStatusLabel.Text = statusMessage;
+            }
+            catch (Exception ex)
+            {
+                // Advise user
+                this.resultToolStripStatusLabel.Text = "Error when logging.";
             }
         }
 
