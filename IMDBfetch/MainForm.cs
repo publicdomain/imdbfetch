@@ -1085,7 +1085,12 @@ namespace IMDBfetch
         /// <param name="e">Event arguments.</param>
         private void OnBrowseImageDirectoryToolStripMenuItemClick(object sender, EventArgs e)
         {
-            // TODO Add code
+            // Check for a vaild directory
+            if (this.directoryTextBox.Text.Length > 0 && Directory.Exists(this.directoryTextBox.Text))
+            {
+                // Open image directory
+                Process.Start(this.directoryTextBox.Text);
+            }
         }
 
         /// <summary>
