@@ -14,6 +14,7 @@ namespace IMDBfetch
     using System.Drawing;
     using System.IO;
     using System.Net;
+    using System.Linq;
     using System.Reflection;
     using System.Windows.Forms;
     using System.Xml.Serialization;
@@ -384,7 +385,7 @@ namespace IMDBfetch
             }
 
             // Update api calls count
-            this.UpdateAPiCalls();
+            this.UpdateApiCalls();
 
             // Enable
             this.searchTextBox.Enabled = true;
@@ -406,9 +407,6 @@ namespace IMDBfetch
 
             /* Download info */
 
-            // Set selected item 
-            var searchListBoxSelectedItem = this.searchListBox.SelectedItem.ToString();
-
             // Disable
             this.searchListBox.Enabled = false;
 
@@ -424,12 +422,12 @@ namespace IMDBfetch
             try
 
             {
-                // Split list item
-                var item = searchListBoxSelectedItem.Split(new char[] { ' ' }, 2);
+                // Get ID and title dictionary
+                var selectedItemIdAndTitle = GetSelectedItemIdAndTitle();
 
                 // Set vars
-                var id = item[0];
-                var title = item[1];
+                var id = selectedItemIdAndTitle["ID"];
+                var title = selectedItemIdAndTitle["Title"];
 
                 // Set data row
                 DataRow[] dataRowArray = this.dataTable.Select($"ID = '{id}'");
@@ -517,16 +515,51 @@ namespace IMDBfetch
             }
 
             // Update api calls count
-            this.UpdateAPiCalls();
+            this.UpdateApiCalls();
 
             // Enable
             this.searchListBox.Enabled = true;
         }
 
         /// <summary>
-        /// Updates the AP i calls.
+        /// Gets the selected item identifier and title.
         /// </summary>
-        private void UpdateAPiCalls()
+        /// <returns>The selected item identifier and title.</returns>
+        private Dictionary<string, string> GetSelectedItemIdAndTitle()
+        {
+            Dictionary<string, string> returnDictionary = new Dictionary<string, string>();
+
+            // Set selected item 
+            var searchListBoxSelectedItem = this.searchListBox.SelectedItem.ToString();
+
+            // Check if there's an ID
+            if (this.settingsData.HideIdsInList)
+            {
+                // Select
+                var rows = from row in this.dataTable.AsEnumerable()
+                           where $"{row.Field<string>("Title")} {row.Field<string>("Description")}" == searchListBoxSelectedItem
+                           select row.Field<string>("ID");
+
+                // Set into return dictionary
+                returnDictionary.Add("ID", rows.First());
+                returnDictionary.Add("Title", searchListBoxSelectedItem);
+            }
+            else
+            {
+                // Split list item
+                var item = searchListBoxSelectedItem.Split(new char[] { ' ' }, 2);
+
+                returnDictionary.Add("ID", item[0]);
+                returnDictionary.Add("Title", item[1]);
+            }
+
+            return returnDictionary;
+        }
+
+        /// <summary>
+        /// Updates the API calls.
+        /// </summary>
+        private void UpdateApiCalls()
         {
             // TODO Update to proper label name
             this.toolStripStatusLabel3.Text = this.serverApiCalls == 0 ? $"+{this.localApiCalls}" : $"{this.serverApiCalls + this.localApiCalls}";
@@ -750,7 +783,7 @@ namespace IMDBfetch
                 this.serverApiCalls = data.Count;
 
                 // Update API calls
-                this.UpdateAPiCalls();
+                this.UpdateApiCalls();
 
                 // Advise user
                 this.resultToolStripStatusLabel.Text = $"API usage count updated.";
