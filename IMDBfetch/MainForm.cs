@@ -562,7 +562,7 @@ namespace IMDBfetch
         private void UpdateApiCalls()
         {
             // TODO Update to proper label name
-            this.toolStripStatusLabel3.Text = this.serverApiCalls == 0 ? $"+{this.localApiCalls}" : $"{this.serverApiCalls + this.localApiCalls}";
+            this.apiCallsCountToolStripStatusLabel.Text = this.serverApiCalls == 0 ? $"+{this.localApiCalls}" : $"{this.serverApiCalls + this.localApiCalls}";
         }
 
         /// <summary>
@@ -1043,6 +1043,44 @@ namespace IMDBfetch
                 // Advise user
                 this.resultToolStripStatusLabel.Text = "Error when logging.";
             }
+        }
+
+        /// <summary>
+        /// Handles the links rich text box link clicked.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnLinksRichTextBoxLinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            // Uri
+            var uri = new Uri(e.LinkText);
+
+            // Validate url 
+            if (uri.IsWellFormedOriginalString())
+            {
+                // Launch with default browser
+                Process.Start(uri.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Handles the image picture box double click.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnImagePictureBoxDoubleClick(object sender, EventArgs e)
+        {
+            // TODO Add code
+        }
+
+        /// <summary>
+        /// Handles the browse image directory tool strip menu item click.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnBrowseImageDirectoryToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            // TODO Add code
         }
 
         /// <summary>

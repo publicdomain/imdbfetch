@@ -81,6 +81,7 @@ namespace IMDBfetch
         	this.aPIKeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         	this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         	this.alwaysOnTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        	this.hideIDsInListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         	this.setAPICalsOnStartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         	this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         	this.freeReleasesPublicDomainIsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -91,15 +92,15 @@ namespace IMDBfetch
         	this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
         	this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         	this.mainStatusStrip = new System.Windows.Forms.StatusStrip();
-        	this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
-        	this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
+        	this.apiCallsToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+        	this.apiCallsCountToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
         	this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
         	this.fetchedToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
         	this.fetchedCountToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
         	this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
         	this.resultToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
         	this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-        	this.hideIDsInListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        	this.browseImageDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         	this.mainTableLayoutPanel.SuspendLayout();
         	this.logTabControl.SuspendLayout();
         	this.searchTabPage.SuspendLayout();
@@ -356,6 +357,7 @@ namespace IMDBfetch
         	this.linksRichTextBox.Size = new System.Drawing.Size(362, 76);
         	this.linksRichTextBox.TabIndex = 2;
         	this.linksRichTextBox.Text = "";
+        	this.linksRichTextBox.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.LinksRichTextBoxLinkClicked);
         	// 
         	// tableLayoutPanel1
         	// 
@@ -477,6 +479,7 @@ namespace IMDBfetch
         	this.imagePictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
         	this.imagePictureBox.TabIndex = 6;
         	this.imagePictureBox.TabStop = false;
+        	this.imagePictureBox.DoubleClick += new System.EventHandler(this.OnImagePictureBoxDoubleClick);
         	this.imagePictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnImagePictureBoxMouseMove);
         	// 
         	// infoLabel
@@ -545,6 +548,7 @@ namespace IMDBfetch
         	// 
         	this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
         	        	        	this.newToolStripMenuItem,
+        	        	        	this.browseImageDirectoryToolStripMenuItem,
         	        	        	this.openToolStripMenuItem,
         	        	        	this.toolStripSeparator,
         	        	        	this.saveToolStripMenuItem,
@@ -560,7 +564,7 @@ namespace IMDBfetch
         	this.newToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
         	this.newToolStripMenuItem.Name = "newToolStripMenuItem";
         	this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-        	this.newToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+        	this.newToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
         	this.newToolStripMenuItem.Text = "&New";
         	this.newToolStripMenuItem.Click += new System.EventHandler(this.OnNewToolStripMenuItemClick);
         	// 
@@ -570,14 +574,14 @@ namespace IMDBfetch
         	this.openToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
         	this.openToolStripMenuItem.Name = "openToolStripMenuItem";
         	this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-        	this.openToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+        	this.openToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
         	this.openToolStripMenuItem.Text = "&Open";
         	this.openToolStripMenuItem.Visible = false;
         	// 
         	// toolStripSeparator
         	// 
         	this.toolStripSeparator.Name = "toolStripSeparator";
-        	this.toolStripSeparator.Size = new System.Drawing.Size(143, 6);
+        	this.toolStripSeparator.Size = new System.Drawing.Size(195, 6);
         	this.toolStripSeparator.Visible = false;
         	// 
         	// saveToolStripMenuItem
@@ -586,19 +590,19 @@ namespace IMDBfetch
         	this.saveToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
         	this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
         	this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-        	this.saveToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+        	this.saveToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
         	this.saveToolStripMenuItem.Text = "&Save";
         	this.saveToolStripMenuItem.Visible = false;
         	// 
         	// toolStripSeparator3
         	// 
         	this.toolStripSeparator3.Name = "toolStripSeparator3";
-        	this.toolStripSeparator3.Size = new System.Drawing.Size(143, 6);
+        	this.toolStripSeparator3.Size = new System.Drawing.Size(195, 6);
         	// 
         	// exitToolStripMenuItem
         	// 
         	this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-        	this.exitToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+        	this.exitToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
         	this.exitToolStripMenuItem.Text = "E&xit";
         	this.exitToolStripMenuItem.Click += new System.EventHandler(this.OnExitToolStripMenuItemClick);
         	// 
@@ -615,7 +619,7 @@ namespace IMDBfetch
         	// getAPICallsToolStripMenuItem
         	// 
         	this.getAPICallsToolStripMenuItem.Name = "getAPICallsToolStripMenuItem";
-        	this.getAPICallsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+        	this.getAPICallsToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
         	this.getAPICallsToolStripMenuItem.Text = "&Get API calls";
         	this.getAPICallsToolStripMenuItem.Click += new System.EventHandler(this.OnGetAPICallsToolStripMenuItemClick);
         	// 
@@ -624,7 +628,7 @@ namespace IMDBfetch
         	this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
         	        	        	this.aPIKeyToolStripMenuItem});
         	this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-        	this.settingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+        	this.settingsToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
         	this.settingsToolStripMenuItem.Text = "&Settings";
         	// 
         	// aPIKeyToolStripMenuItem
@@ -641,7 +645,7 @@ namespace IMDBfetch
         	        	        	this.hideIDsInListToolStripMenuItem,
         	        	        	this.setAPICalsOnStartToolStripMenuItem});
         	this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-        	this.optionsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+        	this.optionsToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
         	this.optionsToolStripMenuItem.Text = "&Options";
         	this.optionsToolStripMenuItem.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.OnOptionsToolStripMenuItemDropDownItemClicked);
         	// 
@@ -650,6 +654,14 @@ namespace IMDBfetch
         	this.alwaysOnTopToolStripMenuItem.Name = "alwaysOnTopToolStripMenuItem";
         	this.alwaysOnTopToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
         	this.alwaysOnTopToolStripMenuItem.Text = "&Always on top";
+        	// 
+        	// hideIDsInListToolStripMenuItem
+        	// 
+        	this.hideIDsInListToolStripMenuItem.Checked = true;
+        	this.hideIDsInListToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+        	this.hideIDsInListToolStripMenuItem.Name = "hideIDsInListToolStripMenuItem";
+        	this.hideIDsInListToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+        	this.hideIDsInListToolStripMenuItem.Text = "&Hide IDs in list";
         	// 
         	// setAPICalsOnStartToolStripMenuItem
         	// 
@@ -721,8 +733,8 @@ namespace IMDBfetch
         	// mainStatusStrip
         	// 
         	this.mainStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-        	        	        	this.toolStripStatusLabel2,
-        	        	        	this.toolStripStatusLabel3,
+        	        	        	this.apiCallsToolStripStatusLabel,
+        	        	        	this.apiCallsCountToolStripStatusLabel,
         	        	        	this.toolStripStatusLabel4,
         	        	        	this.fetchedToolStripStatusLabel,
         	        	        	this.fetchedCountToolStripStatusLabel,
@@ -734,18 +746,18 @@ namespace IMDBfetch
         	this.mainStatusStrip.SizingGrip = false;
         	this.mainStatusStrip.TabIndex = 48;
         	// 
-        	// toolStripStatusLabel2
+        	// apiCallsToolStripStatusLabel
         	// 
-        	this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-        	this.toolStripStatusLabel2.Size = new System.Drawing.Size(54, 17);
-        	this.toolStripStatusLabel2.Text = "API calls:";
+        	this.apiCallsToolStripStatusLabel.Name = "apiCallsToolStripStatusLabel";
+        	this.apiCallsToolStripStatusLabel.Size = new System.Drawing.Size(54, 17);
+        	this.apiCallsToolStripStatusLabel.Text = "API calls:";
         	// 
-        	// toolStripStatusLabel3
+        	// apiCallsCountToolStripStatusLabel
         	// 
-        	this.toolStripStatusLabel3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-        	this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-        	this.toolStripStatusLabel3.Size = new System.Drawing.Size(12, 17);
-        	this.toolStripStatusLabel3.Text = "?";
+        	this.apiCallsCountToolStripStatusLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+        	this.apiCallsCountToolStripStatusLabel.Name = "apiCallsCountToolStripStatusLabel";
+        	this.apiCallsCountToolStripStatusLabel.Size = new System.Drawing.Size(12, 17);
+        	this.apiCallsCountToolStripStatusLabel.Text = "?";
         	// 
         	// toolStripStatusLabel4
         	// 
@@ -784,13 +796,12 @@ namespace IMDBfetch
         	this.openFileDialog.Filter = "TXT files (*.txt)|*.txt|All files (*.*)|*.*";
         	this.openFileDialog.Title = "Open games file";
         	// 
-        	// hideIDsInListToolStripMenuItem
+        	// browseImageDirectoryToolStripMenuItem
         	// 
-        	this.hideIDsInListToolStripMenuItem.Checked = true;
-        	this.hideIDsInListToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-        	this.hideIDsInListToolStripMenuItem.Name = "hideIDsInListToolStripMenuItem";
-        	this.hideIDsInListToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-        	this.hideIDsInListToolStripMenuItem.Text = "&Hide IDs in list";
+        	this.browseImageDirectoryToolStripMenuItem.Name = "browseImageDirectoryToolStripMenuItem";
+        	this.browseImageDirectoryToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+        	this.browseImageDirectoryToolStripMenuItem.Text = "&Browse image directory";
+        	this.browseImageDirectoryToolStripMenuItem.Click += new System.EventHandler(this.BrowseImageDirectoryToolStripMenuItemClick);
         	// 
         	// MainForm
         	// 
@@ -830,6 +841,7 @@ namespace IMDBfetch
         	this.ResumeLayout(false);
         	this.PerformLayout();
         }
+        private System.Windows.Forms.ToolStripMenuItem browseImageDirectoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem hideIDsInListToolStripMenuItem;
         private System.Windows.Forms.RichTextBox linksRichTextBox;
         private System.Windows.Forms.TabPage linksTabPage;
@@ -844,8 +856,8 @@ namespace IMDBfetch
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem getAPIKeyToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel4;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
+        private System.Windows.Forms.ToolStripStatusLabel apiCallsCountToolStripStatusLabel;
+        private System.Windows.Forms.ToolStripStatusLabel apiCallsToolStripStatusLabel;
         private System.Windows.Forms.ToolStripMenuItem setAPICalsOnStartToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem getAPICallsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aPIKeyToolStripMenuItem;
