@@ -850,7 +850,7 @@ namespace IMDBfetch
             var aboutForm = new AboutForm(
                 $"About {programTitle}",
                 $"{programTitle} {version.Major}.{version.Minor}.{version.Build}",
-                $"Made for: Mouser{Environment.NewLine}DonationCoder.com{Environment.NewLine}Day #76, Week #11 @ March 17, 2022",
+                $"Made for: Mouser{Environment.NewLine}DonationCoder.com{Environment.NewLine}Day #77, Week #11 @ March 18, 2022",
                 licenseText,
                 this.Icon.ToBitmap())
             {
