@@ -1070,7 +1070,12 @@ namespace IMDBfetch
         /// <param name="e">Event arguments.</param>
         private void OnImagePictureBoxDoubleClick(object sender, EventArgs e)
         {
-            // TODO Add code
+            // Check for image file
+            if (this.imageFilePath.Length > 0 && File.Exists(this.imageFilePath))
+            {
+                // Open image
+                Process.Start(this.imageFilePath);
+            }
         }
 
         /// <summary>
